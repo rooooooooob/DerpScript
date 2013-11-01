@@ -107,13 +107,30 @@ public:
 	 */
 	void registerFlagDB(const std::string& scope, FlagDB *database);
 
-	void registerFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<float(const ParameterList&)>& function);
+	void registerFunction
+	(
+		const std::string& scope, const std::string& name, const std::string& params,
+		const std::function<float(const ParameterList&)>& function
+	);
 
-	void registerFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<std::string(const ParameterList&)>& function);
+	void registerFunction
+	(
+		const std::string& scope,
+		const std::string& name,
+		const std::string& params,
+		const std::function<std::string(const ParameterList&)>& function
+	);
 
-	void registerProcedure(const std::string& scope, const std::string& name, const std::string& params, const std::function<void(const ParameterList&)>& function);
+	void registerProcedure(
+		const std::string& scope, const std::string& name,
+		const std::string& params, const std::function<void(const ParameterList&)>& function
+	);
 
-	float evaluateNumericalFunction(const std::string& scope, const std::string& name, const ParameterList& parameters) const;
+	float evaluateNumericalFunction(
+		const std::string& scope,
+		const std::string& name,
+		const ParameterList& parameters
+	) const;
 
 	std::string evaluateStringFunction(const std::string& scope, const std::string& name, const ParameterList& parameters) const;
 
@@ -159,9 +176,10 @@ private:
 	std::map<std::string, std::map<std::string, std::map<std::string, std::function<float(const ParameterList&)> > > > numericalFunctions;
 	//!	A map of all non-returning procedures bound to this Context
 	std::unordered_map<std::string, std::map<std::string, std::map<std::string, std::function<void(const ParameterList&)> > > > procedures;
-	//std::stack<std::vector<std::string> > stackVars;
 	//!	The local variables currently on the stack. Only the ones on the top are accessable.
-	std::stack<std::map<std::string, float> > localVars;
+	std::stack<FlagDB*> localVars;
+
+	std::stack<std::map<std::string, std::string> > localStrings;
 
 	std::map<std::string, std::map<std::string, BoundString*> > strings;
 };

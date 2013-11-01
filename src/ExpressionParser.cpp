@@ -450,7 +450,7 @@ void createTokens(std::vector<EToken>& tokens, const char *exp)
 						if (--depthLevel <= 0)
 						{
 							std::string buffer(startOfParam, c - startOfParam);
-							std::cout << "arglist of " << scope << "." << name << "() is [" << buffer << "]" << std::endl;
+							//std::cout << "arglist of " << scope << "." << name << "() is [" << buffer << "]" << std::endl;
 							tokens.back().unary = new Function(scope, name, parseFunctionParameters(buffer.c_str()));
 							break;
 						}

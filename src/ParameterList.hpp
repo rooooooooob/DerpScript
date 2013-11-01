@@ -18,11 +18,10 @@ class Function;
 class ParameterList
 {
 public:
-	enum Type
+	enum class Type
 	{
-		StringLiteral,
-		StringExpression,
-		NumericalExpression
+		Number,
+		String
 	};
 
 
@@ -44,11 +43,20 @@ public:
 
 	Type getTypeOfParameter(int parameterIndex) const;
 
+	int size() const;
+
 private:
+	enum class InternalType
+	{
+		StringLiteral,
+		StringExpression,
+		NumericalExpression
+	};
+
 	std::vector<std::string> strings;
 	std::vector<const Expression*> numericalExpressions;
 	std::vector<std::unique_ptr<const StringConcatenation> > stringFunctions;
-	std::vector<Type> types;
+	std::vector<InternalType> types;
 	std::string signature;
 };
 

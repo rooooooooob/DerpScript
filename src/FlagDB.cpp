@@ -7,12 +7,12 @@ FlagDB::FlagDB()
 {
 }
 
-void FlagDB::set(const std::string& name, int value)
+void FlagDB::set(const std::string& name, float value)
 {
 	flags[name] = value;
 }
 
-int FlagDB::get(const std::string& name) const
+float FlagDB::get(const std::string& name) const
 {
 	int value;
 	try

@@ -10,14 +10,12 @@ namespace ds
 
 Context::Context()
 {
-	flags["local"] = new FlagDB();
+	localVars.push(new FlagDB());
 }
 
 Context::~Context()
 {
-	delete flags["local"];
 	eraseEverything();
-
 }
 
 void Context::setVar(const std::string& scope, const std::string& name, float value)
@@ -51,18 +49,14 @@ float Context::getVar(const std::string& scope, const std::string& name) const
 
 void Context::setFlag(const std::string& scope, const std::string& name, float value)
 {
-	/*if (scope == "local")
+	if (scope == "local")
 	{
-		if (flags["local"]->get(name) == 0)
-		{
-			if (stackVars.empty())
-			{
-				stackVars.push(std::vector<std::string>());
-			}
-			stackVars.top().push_back(name);
-		}
-	}*/
-	flags[scope]->set(name, value);
+		localVars.top()->set(name, value);
+	}
+	else
+	{
+		flags[scope]->set(name, value);
+	}
 }
 
 float Context::getFlag(const std::string& scope, const std::string& name) const
@@ -70,7 +64,14 @@ float Context::getFlag(const std::string& scope, const std::string& name) const
 	float value;
 	try
 	{
-		value = flags.at(scope)->get(name);
+		if (scope == "local")
+		{
+			value = localVars.top()->get(name);
+		}
+		else
+		{
+			value = flags.at(scope)->get(name);
+		}
 	}
 	catch (const std::exception& e)
 	{
@@ -94,19 +95,21 @@ bool Context::variableExists(const std::string& scope, const std::string& name) 
 
 void Context::pushStack()
 {
-	//stackVars.push(std::vector<std::string>());
+	localVars.push(new FlagDB());
+	localStrings.push(std::map<std::string, std::string>());
 }
 
 void Context::popStack()
 {
-	/*if (!stackVars.empty())
+	if (!localVars.empty())
 	{
-		for (std::vector<std::string>::iterator it = stackVars.top().begin(); it != stackVars.top().end(); ++it)
-		{
-			flags["local"]->set(*it, 0);
-		}
+		delete localVars.top();
+		localVars.pop();
 	}
-	stackVars.pop();*/
+	if (!localStrings.empty())
+	{
+		localStrings.pop();
+	}
 }
 
 void Context::registerVar(const std::string& scope, const std::string& name, BoundVar* var)
@@ -162,6 +165,7 @@ void Context::registerFlagDB(const std::string& scope, FlagDB *database)
 	if (flags[scope])
 	{
 		std::cerr << "Warning: Overwriting old FlagDB at scope <" << scope << ">" << std::endl;
+		delete flags[scope];
 	}
 	flags[scope] = database;
 }
@@ -217,6 +221,12 @@ void Context::eraseEverything()
 		it->second.clear();
 	}
 	strings.clear();
+
+	while (!localVars.empty())
+	{
+		delete localVars.top();
+		localVars.pop();
+	}
 }
 
 void Context::unregisterScope(const std::string& scope)
@@ -263,7 +273,14 @@ const std::string Context::getString(const std::string& scope, const std::string
 	std::string value;
 	try
 	{
-		value = strings.at(scope).at(name)->get();
+		if (scope == "local")
+		{
+			value = localStrings.top().at(name);
+		}
+		else
+		{
+			value = strings.at(scope).at(name)->get();
+		}
 	}
 	catch (const std::exception& e)
 	{
@@ -275,14 +292,21 @@ const std::string Context::getString(const std::string& scope, const std::string
 
 void Context::setString(const std::string& scope, const std::string& name, const std::string& value)
 {
-	try
+	if (scope == "local")
 	{
-		strings.at(scope).at(name)->set(value);
+		localStrings.top()[name] = value;
 	}
-	catch (const std::exception& e)
+	else
 	{
-		std::cerr << "Error encountered setting " << scope << "." << name << ":\n\t" << e.what() << std::endl;
-		std::cerr << e.what();
+		try
+		{
+			strings.at(scope).at(name)->set(value);
+		}
+		catch (const std::exception& e)
+		{
+			std::cerr << "Error encountered setting " << scope << "." << name << ":\n\t" << e.what() << std::endl;
+			std::cerr << e.what();
+		}
 	}
 }
 

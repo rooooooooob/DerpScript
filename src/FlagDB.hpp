@@ -13,14 +13,14 @@ class FlagDB
 public:
 	FlagDB();
 
-	void set(const std::string& name, int value);
+	void set(const std::string& name, float value);
 
-	int get(const std::string& name) const;
+	float get(const std::string& name) const;
 
 	//void save(Save& save) const;
 
 private:
-	std::unordered_map<std::string, int> flags;
+	std::unordered_map<std::string, float> flags;
 };
 
 }

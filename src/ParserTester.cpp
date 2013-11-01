@@ -26,22 +26,22 @@ void useParser()
 	context.registerFunction("local", "foo", "NN", std::function<float(const ParameterList&)>(
 		[&context](const ParameterList& params) -> float
 		{
-			int a = params.getNumericalParameter(context, 0);
-			int b = params.getNumericalParameter(context, 1);
+			int a = (int) params.getNumericalParameter(context, 0);
+			int b = (int) params.getNumericalParameter(context, 1);
 			return a + b;
 		}
 	));
 	context.registerFunction("local", "fib", "N", std::function<float(const ParameterList&)>(
 		[&context](const ParameterList& params) -> float
 		{
-			int n = params.getNumericalParameter(context, 0);
+			int n = (int) params.getNumericalParameter(context, 0);
 			ParameterList p1, p2;
-			p1.addNumericalParameter(new Constant(n - 1));
-			p2.addNumericalParameter(new Constant(n - 2));
+			p1.addNumericalParameter(new Constant(n - 1.f));
+			p2.addNumericalParameter(new Constant(n - 2.f));
 			if (n > 1)
 				return context.evaluateNumericalFunction("local", "fib", p1) + context.evaluateNumericalFunction("local", "fib", p2);
 			else
-				return 1;
+				return 1.f;
 		}
 	));
 	context.registerFunction("local", "length", "S", std::function<float(const ParameterList&)>(
@@ -56,24 +56,24 @@ void useParser()
 		{
 			std::string input = params.getStringParameter(context, 0);
 			std::cout << "echo: " << input << std::endl;
-			return 0;
+			return 0.f;
 		}
 	));
 	context.registerFunction("local", "multiPrint", "SN", std::function<float(const ParameterList&)>(
 		[&context](const ParameterList& params) -> float
 		{
 			std::string input = params.getStringParameter(context, 0);
-			int n = params.getNumericalParameter(context, 1);
+			int n = (int) params.getNumericalParameter(context, 1);
 			for (int i = 0; i < n; ++i)
 				std::cout << "echo: " << input << std::endl;
-			return 0;
+			return 0.f;
 		}
 	));
 	context.registerFunction("local", "repeat", "SN", std::function<std::string(const ParameterList&)>(
 		[&context](const ParameterList& params) -> std::string
 		{
 			std::string input = params.getStringParameter(context, 0);
-			int n = params.getNumericalParameter(context, 1);
+			int n = (int) params.getNumericalParameter(context, 1);
 			std::stringstream ss;
 			for (int i = 0; i < n; ++i)
 				ss << input;

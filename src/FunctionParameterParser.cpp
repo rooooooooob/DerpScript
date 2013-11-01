@@ -15,7 +15,6 @@ std::unique_ptr<const ParameterList> parseFunctionParameters(const char *c)
 	int depthLevel = 0;
 	const char *startOfParam = c;
 	std::unique_ptr<ParameterList> params(new ParameterList());
-	std::cout << "nigger we got: <" << c << ">" << std::endl;
 	while (*c != '\0')
 	{
 		if (*c == '(')
@@ -36,7 +35,7 @@ std::unique_ptr<const ParameterList> parseFunctionParameters(const char *c)
 		else if (*c == ',' && depthLevel == 0)	//	move onto the next param
 		{
 			std::string buffer(startOfParam, c - startOfParam);
-			std::cout << "!arg is {" << buffer << "}" << std::endl;
+			//std::cout << "!arg is {" << buffer << "}" << std::endl;
 			addParameter(*params, buffer);
 			startOfParam = c + 1;
 		}
@@ -51,12 +50,12 @@ std::unique_ptr<const ParameterList> parseFunctionParameters(const char *c)
 		throw SyntaxErrorException(ss.str());
 	}
 	std::string buffer(startOfParam,  c - startOfParam);
-	std::cout << "~arg is {" << buffer << "}" << std::endl;
+	//std::cout << "~arg is {" << buffer << "}" << std::endl;
 	if (!buffer.empty())
 	{
 		addParameter(*params, buffer);
 	}
-	std::cout << "paramlist created: " << params->getFormattedSignature() << std::endl;
+	//std::cout << "paramlist created: " << params->getFormattedSignature() << std::endl;
 	return std::unique_ptr<const ParameterList>(params.release());
 }
 
