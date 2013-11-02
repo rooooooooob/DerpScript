@@ -10,6 +10,7 @@
 #include "StringParser.hpp"
 #include "SyntaxErrorException.hpp"
 #include "FunctionParameterParser.hpp"
+#include "ParserUtils.hpp"
 
 #include "Statements/IfStatement.hpp"
 #include "Statements/WhileStatement.hpp"
@@ -656,17 +657,6 @@ char tokenToChar(TokenType type)
 			return '}';
 		default:
 			return '?';
-	}
-}
-
-void eatWhitespace(const char*& c)
-{
-	if (*c != '\0')
-	{
-		while ((*c == ' ' || *c == '\t') && *(c + 1) != '\0')
-		{
-			++c;
-		}
 	}
 }
 

@@ -3,13 +3,12 @@
 #include "SyntaxErrorException.hpp"
 #include "Expressions/Function.hpp"
 #include "FunctionParameterParser.hpp"
+#include "ParserUtils.hpp"
 
 #include <iostream>
 
 namespace ds
 {
-
-static void eatWhitespace(const char*& c);
 
 /*		Extern functiosn		*/
 std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp)
@@ -166,17 +165,6 @@ std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp
 	}
 
 	return std::unique_ptr<const StringConcatenation>(returnVal.release());
-}
-
-void eatWhitespace(const char*& c)
-{
-	if (*c != '\0')
-	{
-		while ((*c == ' ' || *c == '\t') && *(c + 1) != '\0')
-		{
-			++c;
-		}
-	}
 }
 
 }

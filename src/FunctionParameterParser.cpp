@@ -4,6 +4,7 @@
 #include "ExpressionParser.hpp"
 #include "StringParser.hpp"
 #include "SyntaxErrorException.hpp"
+#include "ParserUtils.hpp"
 
 namespace ds
 {

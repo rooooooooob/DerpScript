@@ -13,6 +13,7 @@ public:
 	~Interpreter();
 
 	void interpret();
+
 private:
 	Context context;
 };

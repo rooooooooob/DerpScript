@@ -6,25 +6,27 @@
 #include <vector>
 #include "Statements/Statement.hpp"
 #include "ParameterList.hpp"
-#include "Context.hpp"
 
 namespace ds
 {
 
-class DSProcedure : public Statement
+class Context;
+
+class DSProcedure
 {
 public:
-	DSProcedure(
-		const std::vector<std::string>& paremterNames,
-		std::unique_ptr<const ParameterList> parameters,
+	DSProcedure(Context& context,
+		const std::vector<std::string>& parameterNames,
+		const std::vector<std::string>& parameterTypes,
 		std::unique_ptr<const Statement> body
 	);
 
-	void operator()(Context& context) const;
+	void operator()(const ParameterList& parameters) const;
 
 private:
+	Context& context;
 	std::vector<std::string> parameterNames;
-	std::unique_ptr<const ParameterList> parameters;
+	std::vector<ParameterList::Type> parameterTypes;
 	std::unique_ptr<const Statement> body;
 };
 
