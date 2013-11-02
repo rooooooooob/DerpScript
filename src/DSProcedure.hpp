@@ -21,10 +21,15 @@ public:
 		std::unique_ptr<const Statement> body
 	);
 
+	DSProcedure(DSProcedure& other);
+
+	DSProcedure& operator=(DSProcedure& other);
+
 	void operator()(const ParameterList& parameters) const;
 
 private:
-	Context& context;
+
+	Context *context;
 	std::vector<std::string> parameterNames;
 	std::vector<ParameterList::Type> parameterTypes;
 	std::unique_ptr<const Statement> body;

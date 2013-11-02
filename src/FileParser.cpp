@@ -7,10 +7,12 @@
 #include <cstring>
 #include <cstdlib>
 #include <sstream>
+#include <functional>
 
+#include "Statements/Statement.hpp"
 #include "SyntaxErrorException.hpp"
 #include "Context.hpp"
-#include "Statements/DSProcedure.hpp"
+#include "DSProcedure.hpp"
 #include "ParameterList.hpp"
 #include "Parser.hpp"
 #include "ParserUtils.hpp"
@@ -27,6 +29,8 @@ static void parseProc(std::string& name,
 void loadFile(Context& context, const char *filename)
 {
 	std::vector<std::string> strings;
+
+	eatWhitespace(filename);
 
 	std::fstream file(filename, std::fstream::in);
 
@@ -62,7 +66,6 @@ void loadFile(Context& context, const char *filename)
 		for (line = 0; line < strings.size(); ++line)
 		{
 			const char *c = strings[line].c_str();
-			eatWhitespace(c);
 
 			if (*c == '\n' || *c == '\r' || *c == '\0')
 			{
@@ -77,6 +80,10 @@ void loadFile(Context& context, const char *filename)
 			if (*c == '{')
 			{
 				++braceCount;
+				if ((braceCount == 1 && scope.empty()) || (braceCount == 2 && !scope.empty()))
+				{
+					startOfFunction = line;
+				}
 			}
 			else if (*c == '}')
 			{
@@ -85,11 +92,25 @@ void loadFile(Context& context, const char *filename)
 				{
 					if (braceCount == 0)
 					{
-						//statement = parseSrings(strings, startOfFunction, line);
-						for (int j = startOfFunction; j < line; ++j)
+						std::string params;
+						for (const ParameterList::Type type : parameterTypes)
 						{
-							std::cout << "--   " << strings[j] << "   --\n";
+							switch (type)
+							{
+								case ParameterList::Type::Number:
+									params += 'N';
+									break;
+								case ParameterList::Type::String:
+									params += 'S';
+									break;
+							}
 						}
+						if (scope.empty())
+						{
+							scope = "local";
+						}
+						DSProcedure dsproc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
+						context.registerProcedure(scope, name, params, dsproc);
 					}
 				}
 				else
@@ -100,27 +121,28 @@ void loadFile(Context& context, const char *filename)
 					}
 					else if (braceCount == 1)
 					{
-						for (int j = startOfFunction; j < line; ++j)
-						{
-							std::cout << "--   " << strings[j] << "   --\n";
-						}
+
 					}
 				}
 			}
-			else if (strncmp(c, "scope", sizeof("scope")) == 0)
+			else if (strncmp(c, "scope", sizeof("scope") - 1) == 0)
 			{
-				c += sizeof("scope");
+				c += sizeof("scope") - 1;
 				eatWhitespace(c);
-				scope = c;
+				while (isalnum(*c))
+				{
+					scope += *c;
+					++c;
+				}
 			}
-			else if (strncmp(c, "func", sizeof("func")) == 0)
+			else if (strncmp(c, "func", sizeof("func") - 1) == 0)
 			{
-				c += sizeof("func");
+				c += sizeof("func") - 1;
 				eatWhitespace(c);
 			}
-			else if (strncmp(c, "proc", sizeof("proc")) == 0)
+			else if (strncmp(c, "proc", sizeof("proc") - 1) == 0)
 			{
-				c += sizeof("proc");
+				c += sizeof("proc") - 1;
 				eatWhitespace(c);
 				parseProc(name, parameterNames, parameterTypes, c);
 				std::cout << "[][][][]" << name << "(";
@@ -192,17 +214,18 @@ void parseProc(std::string& name,
 		if (isParsingName)
 		{
 			parameterNames.back() += *s;
+			++s;
 		}
 		else
 		{
-			if (strncmp(s, "Number", sizeof("Number")) == 0)
+			if (strncmp(s, "Number", sizeof("Number") - 1) == 0)
 			{
-				s += sizeof("Number");
+				s += sizeof("Number") - 1;
 				parameterTypes.push_back(ParameterList::Type::Number);
 			}
-			else if (strncmp(s, "String", sizeof("String")) == 0)
+			else if (strncmp(s, "String", sizeof("String") - 1) == 0)
 			{
-				s += sizeof("String");
+				s += sizeof("String") - 1;
 				parameterTypes.push_back(ParameterList::Type::String);
 			}
 			else
@@ -216,13 +239,13 @@ void parseProc(std::string& name,
 
 		if (*s == ',' || *s == ')')
 		{
-			++s;
-			eatWhitespace(s);
 			isParsingName = false;
 			if (*s == ')')
 			{
 				break;
 			}
+			++s;
+			eatWhitespace(s);
 		}
 	}
 }

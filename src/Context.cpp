@@ -55,6 +55,10 @@ void Context::setFlag(const std::string& scope, const std::string& name, float v
 	}
 	else
 	{
+		if (flags.count(scope) == 0)
+		{
+			flags[scope] = new FlagDB();
+		}
 		flags[scope]->set(name, value);
 	}
 }

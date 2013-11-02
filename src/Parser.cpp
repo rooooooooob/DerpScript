@@ -65,7 +65,7 @@ struct SNode
 };
 
 ///////////////////////////////////////////////////
-//		  static function prototypes		   //
+//         static function prototypes            //
 ///////////////////////////////////////////////////
 
 
@@ -78,7 +78,7 @@ static Statement *parseTokens(const std::vector<SToken>& tokens, std::size_t sta
 static char tokenToChar(TokenType type);
 
 ////////////////////////////////////////////////////
-//		  PUBLIC FUNCTION DEFINITIONS		   //	<--------EXTERN-DEFINITIONS-HERE---------<<<
+//       PUBLIC FUNCTION DEFINITIONS              //	<--------EXTERN-DEFINITIONS-HERE---------<<<
 ////////////////////////////////////////////////////
 
 

@@ -7,6 +7,7 @@
 
 #include "Parser.hpp"
 #include "ExpressionParser.hpp"
+#include "FileParser.hpp"
 #include "Expressions/Constant.hpp"
 #include "SyntaxErrorException.hpp"
 #include "RuntimeInterpreterErrorException.hpp"
@@ -117,6 +118,11 @@ void useParser()
 			}
 			else if (input.compare(0, 3, "run") == 0)
 			{
+			}
+			else if (input.compare(0, 4, "load") == 0)
+			{
+				loadFile(context, input.c_str() + 4);
+				std::cout << "Loaded " << input.c_str() + 4 << std::endl;
 			}
 			else if (input.compare(0, 4, "exit") == 0)
 			{
