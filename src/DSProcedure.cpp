@@ -53,7 +53,7 @@ void DSProcedure::operator()(const ParameterList& parameters) const
 				context->setFlag("local", parameterNames[i], parameters.getNumericalParameter(*context, i));
 				break;
 			case ParameterList::Type::String:
-				context->setString("local", parameterNames[i], parameters.getStringParameter(*context, i));
+				context->setStringFlag("local", parameterNames[i], parameters.getStringParameter(*context, i));
 				break;
 		}
 	}

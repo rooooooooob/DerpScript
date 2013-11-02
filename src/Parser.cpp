@@ -523,20 +523,20 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 			throw SyntaxErrorException(ss.str());
 		}
 	}
-	std::cout << "\ndone creating tokens" << std::endl;
+	//std::cout << "\ndone creating tokens" << std::endl;
 }
 
 Statement* parseTokens(const std::vector<SToken>& tokens, std::size_t start, std::size_t end)
 {
-	std::cout << "parseTokens() on:";
+	//std::cout << "parseTokens() on:";
 	for (std::size_t i = start; i < end; ++i)
 	{
 		std::cout << tokenToChar(tokens[i].type) << " ";
 	}
-	std::cout << std::endl;
+	//std::cout << std::endl;
 	if (tokens.empty())
 	{
-		std::cout << "empty tokens?\n";
+		//std::cout << "empty tokens?\n";
 		return new StatementBlock();
 	}
 	SNode *head = nullptr, *cur = nullptr, *temp;
@@ -546,7 +546,7 @@ Statement* parseTokens(const std::vector<SToken>& tokens, std::size_t start, std
 		//handle curly-brace fuckery
 		for (std::size_t i = start; i < end; ++i)
 		{
-			std::cout << tokenToChar(tokens[i].type) << ",";
+			//std::cout << tokenToChar(tokens[i].type) << ",";
 			if (tokens[i].type == CloseBrace)
 			{
 				continue;
@@ -586,10 +586,10 @@ Statement* parseTokens(const std::vector<SToken>& tokens, std::size_t start, std
 				cur->statement = parseTokens(tokens, newStart, i);
 			}
 		}
-		std::cout << "{"; std::cout.flush();
+		//std::cout << "{"; std::cout.flush();
 		for (SNode *it = head; it != nullptr; it = it->right)
 		{
-			std::cout << "eval" << tokenToChar(it->type) << std::endl;
+			//std::cout << "eval" << tokenToChar(it->type) << std::endl;
 			if (it->type == Else)
 			{
 				//  All Else tokens should've been
@@ -603,7 +603,7 @@ Statement* parseTokens(const std::vector<SToken>& tokens, std::size_t start, std
 			//it->statement = it->createStatement();
 			statements.push_back(it->createStatement());
 		}
-		std::cout << "}"; std::cout.flush();
+		//std::cout << "}"; std::cout.flush();
 	}
 	catch (const SyntaxErrorException& see)
 	{

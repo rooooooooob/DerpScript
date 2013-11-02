@@ -20,6 +20,7 @@
 #include "BoundVar.hpp"
 #include "BoundString.hpp"
 #include "FlagDB.hpp"
+#include "StringDB.hpp"
 #include "ParameterList.hpp"
 #include "RuntimeInterpreterErrorException.hpp"
 
@@ -158,6 +159,10 @@ public:
 
 	void setString(const std::string& scope, const std::string& name, const std::string& value);
 
+	const std::string getStringFlag(const std::string& scope, const std::string& name) const;
+
+	void setStringFlag(const std::string& scope, const std::string& name, const std::string& value);
+
 #ifdef DS_DEBUG
 	/**
 	 * Debug print method that prints out all variables/flags/functions bound/stored in this context.
@@ -170,6 +175,8 @@ private:
 	std::unordered_map<std::string, std::unordered_map<std::string, BoundVar*> > variables;
 	//!	A lookup table of all Flag Databases bound to this Context
 	std::unordered_map<std::string, FlagDB*> flags;
+	//! A lookup table of all String Databases bound to this Context
+	std::unordered_map<std::string, StringDB*> stringDBs;
 	//!	A map of all string-returning functions bound to this Context
 	std::map<std::string, std::map<std::string, std::map<std::string, std::function<std::string(const ParameterList&)> > > > stringFunctions;
 	//!	A map of all numerical-returning functions bound to this Context
@@ -180,6 +187,8 @@ private:
 	std::stack<FlagDB*> localVars;
 
 	std::stack<std::map<std::string, std::string> > localStrings;
+
+
 
 	std::map<std::string, std::map<std::string, BoundString*> > strings;
 };

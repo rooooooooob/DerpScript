@@ -60,6 +60,13 @@ void useParser()
 			return 0.f;
 		}
 	));
+	context.registerProcedure("local", "print", "S", std::function<void(const ParameterList&)>(
+		[&context](const ParameterList& params) -> void
+		{
+			std::string input = params.getStringParameter(context, 0);
+			std::cout << "echo: " << input << std::endl;
+		}
+	));
 	context.registerFunction("local", "multiPrint", "SN", std::function<float(const ParameterList&)>(
 		[&context](const ParameterList& params) -> float
 		{

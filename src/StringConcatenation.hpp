@@ -23,15 +23,22 @@ public:
 
 	void addStringFunction(const Function *function);
 
+	void addStringVariable(const std::string& scope, const std::string& name);
+
+	void addStringFlag(const std::string&, const std::string& name);
+
 	std::string concatenate(const Context& context) const;
 private:
-	enum Type
+	enum class Type
 	{
 		StringLiteral,
-		StringFunction
+		StringFunction,
+		StringVariable,
+		StringFlag
 	};
 	std::vector<const Function*> functions;
-	std::vector<std::string> literals;
+	std::vector<std::string> literals;//used for names too
+	std::vector<std::string> scopes;
 	std::vector<Type> types;
 };
 

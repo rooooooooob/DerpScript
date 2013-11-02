@@ -23,7 +23,7 @@ std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp
 	const char *c = exp;
 	const char *start;
 	const char *startOfStringFunction = nullptr;
-	//std::cout << "we got [" << c << "]" << std::endl;
+	//std::cout << "we got <" << c << ">" << std::endl;
 
 	std::string buffer;	//	used to hold string literals
 
@@ -98,6 +98,7 @@ std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp
 					std::string scope, name;
 					const char * const end = c;
 					c = startOfStringFunction;
+					bool isFlag = true;
 					if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z'))
 					{
 						while ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z'))
@@ -105,20 +106,32 @@ std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp
 							scope += *c;
 							++c;
 						}
-						if (*c == ':')
+						if (*c == '.')
 						{
+							isFlag = false;
+							++c;
 							while ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z'))
 							{
+								name += *c;
 								++c;
 							}
 						}
-						if (*c == '(')
+						else if (*c == ':')
 						{
-							if (name.empty())
+							++c;
+							while ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z'))
+							{
+								name += *c;
+								++c;
+							}
+						}
+						if (name.empty())
 							{
 								name = scope;
 								scope = "local";
 							}
+						if (*c == '(')
+						{
 							std::string buffer;
 							int parenthesisDepth = 1;
 							for ( ; ; )
@@ -146,7 +159,23 @@ std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp
 						}
 						else
 						{
-							throw SyntaxErrorException("StringParser.cpp : unknown symbol in id");
+							eatWhitespace(c);
+							if (*c == ']')
+							{
+								if (isFlag)
+								{
+									returnVal->addStringFlag(scope, name);
+								}
+								else
+								{
+									returnVal->addStringVariable(scope, name);
+								}
+								
+							}
+							else
+							{
+								throw SyntaxErrorException("StringParser.cpp : unknown symbol in id");
+							}
 						}
 					}
 					else

@@ -23,7 +23,7 @@ StringConcatenation::~StringConcatenation()
 
 void StringConcatenation::addStringLiteral(const std::string& stringLiteral)
 {
-	if (!types.empty() && types.back() == StringLiteral)
+	if (!types.empty() && types.back() == Type::StringLiteral)
 	{
 		literals.back() += stringLiteral;
 	}
@@ -31,7 +31,8 @@ void StringConcatenation::addStringLiteral(const std::string& stringLiteral)
 	{
 		functions.push_back(nullptr);
 		literals.push_back(stringLiteral);
-		types.push_back(StringLiteral);
+		scopes.push_back("");
+		types.push_back(Type::StringLiteral);
 	}
 }
 
@@ -39,7 +40,24 @@ void StringConcatenation::addStringFunction(const Function *function)
 {
 	functions.push_back(function);
 	literals.push_back("invalid");
-	types.push_back(StringFunction);
+	scopes.push_back("");
+	types.push_back(Type::StringFunction);
+}
+
+void StringConcatenation::addStringVariable(const std::string& scope, const std::string& name)
+{
+	functions.push_back(nullptr);
+	literals.push_back(name);
+	scopes.push_back(scope);
+	types.push_back(Type::StringVariable);
+}
+
+void StringConcatenation::addStringFlag(const std::string& scope, const std::string& name)
+{
+	functions.push_back(nullptr);
+	literals.push_back(name);
+	scopes.push_back(scope);
+	types.push_back(Type::StringFlag);
 }
 
 std::string StringConcatenation::concatenate(const Context& context) const
@@ -47,13 +65,20 @@ std::string StringConcatenation::concatenate(const Context& context) const
 	std::string buffer;
 	for (std::size_t i = 0; i < types.size(); ++i)
 	{
-		if (types[i] == StringLiteral)
+		switch (types[i])
 		{
-			buffer += literals[i];
-		}
-		else
-		{
-			buffer += functions[i]->evaluateAsString(context);
+			case Type::StringLiteral:
+				buffer += literals[i];
+				break;
+			case Type::StringFunction:
+				buffer += functions[i]->evaluateAsString(context);
+				break;
+			case Type::StringVariable:
+				buffer += context.getString(scopes[i], literals[i]);
+				break;
+			case Type::StringFlag:
+				buffer += context.getStringFlag(scopes[i], literals[i]);
+				break;
 		}
 	}
 	return buffer;

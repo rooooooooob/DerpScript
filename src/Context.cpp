@@ -277,24 +277,52 @@ const std::string Context::getString(const std::string& scope, const std::string
 	std::string value;
 	try
 	{
+		value = strings.at(scope).at(name)->get();
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "Error encountered getting " << scope << "." << name << ":\n\t" << e.what() << std::endl;
+		value = "<error: " + scope + "." + name + " doesn't exist>";
+	}
+	return value;
+}
+
+void Context::setString(const std::string& scope, const std::string& name, const std::string& value)
+{
+	try
+	{
+		strings.at(scope).at(name)->set(value);
+	}
+	catch (const std::exception& e)
+	{
+		std::cerr << "Error encountered setting " << scope << "." << name << ":\n\t" << e.what() << std::endl;
+		std::cerr << e.what();
+	}
+}
+
+const std::string Context::getStringFlag(const std::string& scope, const std::string& name) const
+{
+	std::string value;
+	try
+	{
 		if (scope == "local")
 		{
 			value = localStrings.top().at(name);
 		}
 		else
 		{
-			value = strings.at(scope).at(name)->get();
+			value = stringDBs.at(scope)->get(name);
 		}
 	}
 	catch (const std::exception& e)
 	{
-		std::cerr << "Error encountered getting " << scope << "." << name << ":\n\t" << e.what() << std::endl;
+		std::cerr << "Error encountered getting " << scope << ":" << name << ":\n\t" << e.what() << std::endl;
 		value = "<error: " + scope + ":" + name + " doesn't exist>";
 	}
 	return value;
 }
 
-void Context::setString(const std::string& scope, const std::string& name, const std::string& value)
+void Context::setStringFlag(const std::string& scope, const std::string& name, const std::string& value)
 {
 	if (scope == "local")
 	{
@@ -302,15 +330,11 @@ void Context::setString(const std::string& scope, const std::string& name, const
 	}
 	else
 	{
-		try
-		{
-			strings.at(scope).at(name)->set(value);
-		}
-		catch (const std::exception& e)
-		{
-			std::cerr << "Error encountered setting " << scope << "." << name << ":\n\t" << e.what() << std::endl;
-			std::cerr << e.what();
-		}
+		 if (stringDBs.count(scope) == 0)
+		 {
+			 stringDBs[scope] = new StringDB();
+		 }
+		 stringDBs[scope]->set(name, value);
 	}
 }
 

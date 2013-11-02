@@ -88,41 +88,35 @@ void loadFile(Context& context, const char *filename)
 			else if (*c == '}')
 			{
 				--braceCount;
-				if (scope.empty())
+				if (braceCount < 0)
 				{
-					if (braceCount == 0)
-					{
-						std::string params;
-						for (const ParameterList::Type type : parameterTypes)
-						{
-							switch (type)
-							{
-								case ParameterList::Type::Number:
-									params += 'N';
-									break;
-								case ParameterList::Type::String:
-									params += 'S';
-									break;
-							}
-						}
-						if (scope.empty())
-						{
-							scope = "local";
-						}
-						DSProcedure dsproc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
-						context.registerProcedure(scope, name, params, dsproc);
-					}
+					throw SyntaxErrorException("Found } without matching { before it in file");
 				}
-				else
+				if ((braceCount == 0 && scope.empty()) || (braceCount == 1 && !scope.empty()))
 				{
-					if (braceCount == 0)
+					std::string params;
+					for (const ParameterList::Type type : parameterTypes)
 					{
-						scope.clear();
+						switch (type)
+						{
+							case ParameterList::Type::Number:
+								params += 'N';
+								break;
+							case ParameterList::Type::String:
+								params += 'S';
+								break;
+						}
 					}
-					else if (braceCount == 1)
+					if (scope.empty())
 					{
-
+						scope = "local";
 					}
+					DSProcedure dsproc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
+					context.registerProcedure(scope, name, params, dsproc);
+				}
+				if (braceCount == 0)
+				{
+					scope.clear();
 				}
 			}
 			else if (strncmp(c, "scope", sizeof("scope") - 1) == 0)
@@ -145,16 +139,6 @@ void loadFile(Context& context, const char *filename)
 				c += sizeof("proc") - 1;
 				eatWhitespace(c);
 				parseProc(name, parameterNames, parameterTypes, c);
-				std::cout << "[][][][]" << name << "(";
-				for (int p = 0; p < parameterNames.size(); ++p)
-				{
-					if (parameterTypes[p] == ParameterList::Type::Number)
-						std::cout << "Number";
-					else
-						std::cout << "String";
-					std::cout << parameterNames[p] << ",";
-				}
-				std::cout << ")\n";
 			}
 		}
 	}
