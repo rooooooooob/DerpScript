@@ -10,9 +10,10 @@ SetString::SetString(const std::string& scope, const std::string name, std::uniq
 {
 }
 
-void SetString::execute(Context& context) const
+bool SetString::execute(Context& context) const
 {
 	context.setString(scope, name, expression->concatenate(context));
+	return false;
 }
 
 }

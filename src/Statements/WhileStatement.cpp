@@ -15,12 +15,16 @@ WhileStatement::~WhileStatement()
 	delete body;
 }
 
-void WhileStatement::execute(Context& context) const
+bool WhileStatement::execute(Context& context) const
 {
 	while (condition->evaluate(context))
 	{
-		body->execute(context);
+		if (body->execute(context))
+		{
+			return true;
+		}
 	}
+	return false;
 }
 
 }

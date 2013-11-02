@@ -14,7 +14,7 @@ public:
 	StatementBlock(const std::vector<Statement*>& statements);
 	~StatementBlock();
 
-	void execute(Context& context) const;
+	bool execute(Context& context) const override;
 private:
 	const std::vector<Statement*> statements;
 };

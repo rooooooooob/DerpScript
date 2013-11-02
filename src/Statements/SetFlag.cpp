@@ -10,9 +10,10 @@ SetFlag::SetFlag(const std::string& scope, const std::string& name, const Expres
 {
 }
 
-void SetFlag::execute(Context& context) const
+bool SetFlag::execute(Context& context) const
 {
 	context.setFlag(scope, name, expression->evaluate(context));
+	return false;
 }
 
 }

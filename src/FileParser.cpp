@@ -13,6 +13,7 @@
 #include "SyntaxErrorException.hpp"
 #include "Context.hpp"
 #include "DSProcedure.hpp"
+#include "DSFunction.hpp"
 #include "ParameterList.hpp"
 #include "Parser.hpp"
 #include "ParserUtils.hpp"
@@ -59,6 +60,12 @@ void loadFile(Context& context, const char *filename)
 	std::vector<std::string> parameterNames;
 	std::vector<ParameterList::Type> parameterTypes;
 	int startOfFunction = 0;
+	enum class FunctionType
+	{
+		Procedure,
+		Numerical
+	};
+	FunctionType functionType(FunctionType::Procedure); 
 
 	int line = 0;
 	try
@@ -111,8 +118,16 @@ void loadFile(Context& context, const char *filename)
 					{
 						scope = "local";
 					}
-					DSProcedure dsproc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
-					context.registerProcedure(scope, name, params, dsproc);
+					if (functionType == FunctionType::Procedure)
+					{
+						DSProcedure dsproc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
+						context.registerProcedure(scope, name, params, dsproc);
+					}
+					else
+					{
+						DSFunction dsfunc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
+						context.registerFunction(scope, name, params, dsfunc);
+					}
 				}
 				if (braceCount == 0)
 				{
@@ -133,12 +148,15 @@ void loadFile(Context& context, const char *filename)
 			{
 				c += sizeof("func") - 1;
 				eatWhitespace(c);
+				parseProc(name, parameterNames, parameterTypes, c);
+				functionType = FunctionType::Numerical;
 			}
 			else if (strncmp(c, "proc", sizeof("proc") - 1) == 0)
 			{
 				c += sizeof("proc") - 1;
 				eatWhitespace(c);
 				parseProc(name, parameterNames, parameterTypes, c);
+				functionType = FunctionType::Procedure;
 			}
 		}
 	}

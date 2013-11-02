@@ -13,7 +13,7 @@ public:
 	WhileStatement(const Expression *condition, const Statement *body);
 	~WhileStatement();
 
-	void execute(Context& context) const;
+	bool execute(Context& context) const override;
 
 private:
 	const Expression * const condition;

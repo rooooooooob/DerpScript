@@ -16,7 +16,7 @@ public:
 
 	std::string getSignature() const;
 
-	void execute(Context& context) const override;
+	bool execute(Context& context) const override;
 private:
 	const std::string scope;
 	const std::string name;

@@ -114,7 +114,7 @@ public:
 		const std::function<float(const ParameterList&)>& function
 	);
 
-	void registerFunction
+	void registerStringFunction
 	(
 		const std::string& scope,
 		const std::string& name,
@@ -163,6 +163,10 @@ public:
 
 	void setStringFlag(const std::string& scope, const std::string& name, const std::string& value);
 
+	float getReturnValue() const;
+
+	void setReturnValue(float value);
+
 #ifdef DS_DEBUG
 	/**
 	 * Debug print method that prints out all variables/flags/functions bound/stored in this context.
@@ -188,9 +192,9 @@ private:
 
 	std::stack<std::map<std::string, std::string> > localStrings;
 
-
-
 	std::map<std::string, std::map<std::string, BoundString*> > strings;
+
+	float returnValue;
 };
 
 /*

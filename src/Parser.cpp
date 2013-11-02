@@ -18,7 +18,9 @@
 #include "Statements/SetVariable.hpp"
 #include "Statements/SetFlag.hpp"
 #include "Statements/SetString.hpp"
+#include "Statements/SetStringFlag.hpp"
 #include "Statements/Procedure.hpp"
+#include "Statements/ReturnStatement.hpp"
 
 //  Because of +=, -=, *=, and /=
 #include "Expressions/ArithmeticOperators.hpp"
@@ -33,7 +35,18 @@ namespace ds
 //		  DECLARATION OF STUFF USED ONLY IN THIS FILE		   //
 ///////////////////////////////////////////////////////////////////
 
-enum TokenType {If, Else, While, SetVar, StringSet, ProcedureCall, OpenBrace, CloseBrace};
+enum TokenType
+{
+	If,
+	Else,
+	While,
+	SetVar,
+	StringSet,
+	ProcedureCall,
+	OpenBrace,
+	CloseBrace,
+	Return
+};
 
 struct SToken
 {
@@ -376,10 +389,17 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 			c += 5;
 			tokens.back().expression = parseExpression(c);
 		}
+		else if (strncmp(c, "return", 6) == 0)
+		{
+			tokens.push_back(SToken(Return, line + 1, strings[line]));
+			c += 6;
+			tokens.back().statement = new ReturnStatement(std::unique_ptr<const Expression>(parseExpression(c)));
+		}
 		else if (strncmp(c, "set", 3) == 0)	//	string setters
 		{
 			tokens.push_back(SToken(StringSet, line + 1, strings[line]));
 			bool onScope = true;
+			bool isFlag = true;
 			std::string scope, name;
 			c += 3;
 			eatWhitespace(c);
@@ -387,6 +407,12 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 			{
 				if (*c == '.')
 				{
+					isFlag = false;
+					onScope = false;
+				}
+				else if (*c == ':')
+				{
+					isFlag = true;
 					onScope = false;
 				}
 				else if (onScope)
@@ -399,8 +425,20 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 				}
 				++c;
 			}
+			if (onScope)
+			{
+				name = scope;
+				scope = "local";
+			}
 			eatWhitespace(c);
-			tokens.back().statement = new SetString(scope, name, parseStringExpression(c));
+			if (isFlag)
+			{
+				tokens.back().statement = new SetStringFlag(scope, name, parseStringExpression(c));
+			}
+			else
+			{
+				tokens.back().statement = new SetString(scope, name, parseStringExpression(c));
+			}
 		}
 		else if ((*c >= 'a' && *c <= 'z') || (*c >= 'A' && *c <= 'Z'))  //  variables / flags
 		{
@@ -663,6 +701,8 @@ char tokenToChar(TokenType type)
 			return '{';
 		case CloseBrace:
 			return '}';
+		case Return:
+			return 'r';
 		default:
 			return '?';
 	}

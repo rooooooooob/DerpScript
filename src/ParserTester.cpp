@@ -77,7 +77,7 @@ void useParser()
 			return 0.f;
 		}
 	));
-	context.registerFunction("local", "repeat", "SN", std::function<std::string(const ParameterList&)>(
+	context.registerStringFunction("local", "repeat", "SN", std::function<std::string(const ParameterList&)>(
 		[&context](const ParameterList& params) -> std::string
 		{
 			std::string input = params.getStringParameter(context, 0);

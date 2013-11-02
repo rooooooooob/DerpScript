@@ -19,12 +19,16 @@ StatementBlock::~StatementBlock()
 	}
 }
 
-void StatementBlock::execute(Context& context) const
+bool StatementBlock::execute(Context& context) const
 {
-	for (std::vector<Statement*>::const_iterator it = statements.begin(); it != statements.end(); ++it)
+	for (const Statement *statement : statements)
 	{
-		(*it)->execute(context);
+		if (statement->execute(context))
+		{
+			return true;
+		}
 	}
+	return false;
 }
 
 }

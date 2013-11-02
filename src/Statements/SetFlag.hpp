@@ -13,7 +13,7 @@ class SetFlag : public Statement
 public:
 	SetFlag(const std::string& scope, const std::string& name, const Expression *expression);
 
-	void execute(Context& context) const;
+	bool execute(Context& context) const override;
 
 private:
 	const std::string scope;

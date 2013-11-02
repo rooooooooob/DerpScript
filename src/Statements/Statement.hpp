@@ -11,7 +11,7 @@ class Statement
 public:
 	virtual ~Statement() {};
 
-	virtual void execute(Context& context) const = 0;
+	virtual bool execute(Context& context) const = 0;
 
 protected:
 	Statement() {}

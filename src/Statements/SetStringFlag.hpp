@@ -1,5 +1,5 @@
-#ifndef DS_SETSTRING_HPP
-#define DS_SETSTRING_HPP
+#ifndef DS_SETSTRINGFLAG_HPP
+#define DS_SETSTRINGFLAG_HPP
 
 #include <string>
 #include <memory>
@@ -11,10 +11,10 @@
 namespace ds
 {
 
-class SetString : public Statement
+class SetStringFlag : public Statement
 {
 public:
-	SetString(const std::string& scope, const std::string name, std::unique_ptr<const StringConcatenation> expression);
+	SetStringFlag(const std::string& scope, const std::string name, std::unique_ptr<const StringConcatenation> expression);
 
 	bool execute(Context& context) const override;
 

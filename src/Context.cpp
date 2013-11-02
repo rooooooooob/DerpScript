@@ -9,6 +9,7 @@ namespace ds
 {
 
 Context::Context()
+	:returnValue(1337)
 {
 	localVars.push(new FlagDB());
 }
@@ -179,7 +180,7 @@ void Context::registerFunction(const std::string& scope, const std::string& name
 	generateRegisterMethod(scope, name, params, function, numericalFunctions, "number");
 }
 
-void Context::registerFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<std::string(const ParameterList&)>& function)
+void Context::registerStringFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<std::string(const ParameterList&)>& function)
 {
 	generateRegisterMethod(scope, name, params, function, stringFunctions, "string");
 }
@@ -336,6 +337,16 @@ void Context::setStringFlag(const std::string& scope, const std::string& name, c
 		 }
 		 stringDBs[scope]->set(name, value);
 	}
+}
+
+float Context::getReturnValue() const
+{
+	return returnValue;
+}
+
+void Context::setReturnValue(float value)
+{
+	returnValue = value;
 }
 
 #ifdef DS_DEBUG

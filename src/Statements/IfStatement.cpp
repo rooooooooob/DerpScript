@@ -26,16 +26,23 @@ IfStatement::~IfStatement()
 	}
 }
 
-void IfStatement::execute(Context& context) const
+bool IfStatement::execute(Context& context) const
 {
 	if (condition->evaluate(context))
 	{
-		onTrue->execute(context);
+		if (onTrue->execute(context))
+		{
+			return true;
+		}
 	}
 	else if (onFalse)
 	{
-		onFalse->execute(context);
+		if (onFalse->execute(context))
+		{
+			return true;
+		}
 	}
+	return false;
 }
 
 }

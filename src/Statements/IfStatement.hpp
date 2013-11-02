@@ -13,7 +13,7 @@ public:
 	IfStatement(const Expression *condition, const Statement *onTrue, const Statement *onFalse = nullptr);
 	~IfStatement();
 
-	void execute(Context& context) const;
+	bool execute(Context& context) const override;
 
 private:
 	const Expression * const condition;

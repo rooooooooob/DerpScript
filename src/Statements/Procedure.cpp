@@ -15,9 +15,10 @@ std::string Procedure::getSignature() const
 	return scope + ":" + name + parameters->getFormattedSignature();
 }
 
-void Procedure::execute(Context& context) const
+bool Procedure::execute(Context& context) const
 {
 	context.executeProcedure(scope, name, *parameters);
+	return false;
 }
 
 }

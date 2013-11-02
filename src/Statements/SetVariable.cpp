@@ -10,9 +10,10 @@ SetVariable::SetVariable(const std::string& scope, const std::string& name, cons
 {
 }
 
-void SetVariable::execute(Context& context) const
+bool SetVariable::execute(Context& context) const
 {
 	context.setVar(scope, name, expression->evaluate(context));
+	return false;
 }
 
 }
