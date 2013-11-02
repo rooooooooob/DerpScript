@@ -24,6 +24,14 @@ void useParser()
 	std::cout << "Welcome to the parsing tester!" << std::endl;
 	std::string input;
 	Context context;
+	context.registerStringFunction("local", "str", "N", std::function<std::string(const ParameterList&)>(
+		[&context](const ParameterList& params) -> std::string
+		{
+			std::stringstream ss;
+			ss << params.getNumericalParameter(context, 0);
+			return ss.str();
+		}
+	));
 	context.registerFunction("local", "foo", "NN", std::function<float(const ParameterList&)>(
 		[&context](const ParameterList& params) -> float
 		{

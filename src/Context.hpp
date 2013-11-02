@@ -92,12 +92,18 @@ public:
 	 * Binds a C++ variable/something that acts like one to this Context's variable lists
 	 * so that it can be accessed from within the scripting language. If a variable is
 	 * already bound to the name/scope it is deleted and replaced.
-	 * @param scope The scope to beind it to
+	 * @param scope The scope to bind it to
 	 * @param name The name to bind it to
 	 * @param var The variable to bind
 	 */
 	void registerVar(const std::string& scope, const std::string& name, BoundVar* var);
-
+	/**
+	 * Binds a C++ string to this context so it can be modified/read from within the language
+	 * If a string is already bound here it will replace that one
+	 * @param scope The scope to bind it to
+	 * @param name The name of the string
+	 * @param The string bind itself
+	 */
 	void registerString(const std::string& scope, const std::string& name, BoundString *string);
 
 	/**
@@ -108,12 +114,28 @@ public:
 	 */
 	void registerFlagDB(const std::string& scope, FlagDB *database);
 
+	/**
+	 * Registers a function that returns a float to this Context. After this it can
+	 * be called anywhere in the language.
+	 * @param scope The scope (namespace) the function resides in
+	 * @param name The name of the function
+	 * @param params The parameter signature (eg NNS for Number, Number, String) (see ParameterList)
+	 * @param function A std::function to the function itself
+	 */
 	void registerFunction
 	(
 		const std::string& scope, const std::string& name, const std::string& params,
 		const std::function<float(const ParameterList&)>& function
 	);
 
+	/**
+	 * Registers a function that returns a string to this Context. After this it can
+	 * be called anywhere in the language.
+	 * @param scope The scope (namespace) the function resides in
+	 * @param name The name of the function
+	 * @param params The parameter signature (eg NNS for Number, Number, String) (see ParameterList)
+	 * @param function A std::function to the function itself
+	 */
 	void registerStringFunction
 	(
 		const std::string& scope,
@@ -122,19 +144,44 @@ public:
 		const std::function<std::string(const ParameterList&)>& function
 	);
 
+	/**
+	 * Registers a procedure to this Context. After this it can be called anywhere in the language.
+	 * @param scope The scope (namespace) the procedure resides in
+	 * @param name The name of the procedure
+	 * @param params The parameter signature (eg NNS for Number, Number, String) (see ParameterList)
+	 * @param function A std::function to the function itself
+	 */
 	void registerProcedure(
 		const std::string& scope, const std::string& name,
 		const std::string& params, const std::function<void(const ParameterList&)>& function
 	);
 
+	/**
+	 * Evaluates a registered number-returning function of this Context
+	 * @param scope The scope (namespace) the procedure resides in
+	 * @param name The name of the procedure
+	 * @param parameters The parameters to call this function with
+	 */
 	float evaluateNumericalFunction(
 		const std::string& scope,
 		const std::string& name,
 		const ParameterList& parameters
 	) const;
 
+	/**
+	 * Evaluates a registered string-returning function of this Context
+	 * @param scope The scope (namespace) the procedure resides in
+	 * @param name The name of the procedure
+	 * @param parameters The parameters to call this function with
+	 */
 	std::string evaluateStringFunction(const std::string& scope, const std::string& name, const ParameterList& parameters) const;
 
+	/**
+	 * Evaluates a procedure of this Context
+	 * @param scope The scope (namespace) the procedure resides in
+	 * @param name The name of the procedure
+	 * @param parameters The parameters to call this function with
+	 */
 	void executeProcedure(const std::string& scope, const std::string& name, const ParameterList& parameters);
 
 	/**
@@ -155,16 +202,48 @@ public:
 	 */
 	void unregisterVar(const std::string& scope, const std::string& name);
 
+	/**
+	 * Sets the value of a registered string (Must be bound via BoundString)
+	 * @param scope The namespace of the string
+	 * @param name The name of the string
+	 * @return The value of the string
+	 */
 	const std::string getString(const std::string& scope, const std::string& name) const;
-
+	/**
+	 * Gets the value of a registered string (Must be bound via BoundString)
+	 * @param scope The namespace of the string
+	 * @param name The name of the string
+	 * @param value The value of the string
+	 */
 	void setString(const std::string& scope, const std::string& name, const std::string& value);
 
+	/**
+	 * Gets the value of a string in a StringDB. If the DB at the scope doesn't exist
+	 * then an empty string is returned and an error is reported
+	 * @param scope The namespace of the string
+	 * @param name The name of the string
+	 * @return The value of the string
+	 */
 	const std::string getStringFlag(const std::string& scope, const std::string& name) const;
 
+	/**
+	 * Sets the value of a string in a StringDB. If the DB at the scope doesn't exist
+	 * then an empty one will be created to insert this in.
+	 * @param scope The namespace of the string
+	 * @param name The name of the string
+	 * @param value The value of the string
+	 */
 	void setStringFlag(const std::string& scope, const std::string& name, const std::string& value);
 
+	/**
+	 * Gets the value on the stack of the last function to return
+	 * @return The return value
+	 */
 	float getReturnValue() const;
-
+	/**
+	 * Pushes a value onto the stack (only ReturnStatement should be calling this...
+	 * @param value The return value
+	 */
 	void setReturnValue(float value);
 
 #ifdef DS_DEBUG
@@ -189,11 +268,11 @@ private:
 	std::unordered_map<std::string, std::map<std::string, std::map<std::string, std::function<void(const ParameterList&)> > > > procedures;
 	//!	The local variables currently on the stack. Only the ones on the top are accessable.
 	std::stack<FlagDB*> localVars;
-
+	//!	The local strings currently on the stack. Only the ones on the top are accessable.
 	std::stack<std::map<std::string, std::string> > localStrings;
-
+	//!	The bound strings currently registered
 	std::map<std::string, std::map<std::string, BoundString*> > strings;
-
+	//!	The return value kept on the stack for returning functions
 	float returnValue;
 };
 
