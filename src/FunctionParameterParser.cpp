@@ -16,31 +16,46 @@ std::unique_ptr<const ParameterList> parseFunctionParameters(const char *c)
 	int depthLevel = 0;
 	const char *startOfParam = c;
 	std::unique_ptr<ParameterList> params(new ParameterList());
-	while (*c != '\0')
+	bool isInLiteral = false;
+	for (; *c != '\0'; ++c)
 	{
-		if (*c == '(')
+		if (isInLiteral)
 		{
-			++depthLevel;
-		}
-		else if (*c == ')')
-		{
-			if (--depthLevel < 0)
+			if (*c == '"')
 			{
-				std::stringstream ss;
-				ss << "Unbalanced parenthesis in function parameters '"
-				   << c
-				   << "' - too many )s";
-				throw SyntaxErrorException(ss.str());
+				isInLiteral = false;
+			}
+			continue;
+		}
+		else
+		{
+			if (*c == '"')
+			{
+				isInLiteral =  true;
+			}
+			else if (*c == '(')
+			{
+				++depthLevel;
+			}
+			else if (*c == ')')
+			{
+				if (--depthLevel < 0)
+				{
+					std::stringstream ss;
+					ss << "Unbalanced parenthesis in function parameters '"
+					   << c
+					   << "' - too many )s";
+					throw SyntaxErrorException(ss.str());
+				}
+			}
+			else if (*c == ',' && depthLevel == 0)	//	move onto the next param
+			{
+				std::string buffer(startOfParam, c - startOfParam);
+				//std::cout << "!arg is {" << buffer << "}" << std::endl;
+				addParameter(*params, buffer);
+				startOfParam = c + 1;
 			}
 		}
-		else if (*c == ',' && depthLevel == 0)	//	move onto the next param
-		{
-			std::string buffer(startOfParam, c - startOfParam);
-			//std::cout << "!arg is {" << buffer << "}" << std::endl;
-			addParameter(*params, buffer);
-			startOfParam = c + 1;
-		}
-		++c;
 	}
 	if (depthLevel > 0)
 	{

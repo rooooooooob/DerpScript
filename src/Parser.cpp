@@ -93,15 +93,15 @@ Statement* parseFile(const char *filename)
 
 	if (file.is_open())
 	{
-		std::cout << "Opened '" << filename << "'\n";
+		//std::cout << "Opened '" << filename << "'\n";
 		while (file.good())
 		{
 			strings.push_back(std::string());
 			getline(file, strings.back());
-			std::cout << strings.size();
-			if (strings.size() < 10)
-				std::cout << " ";
-			std::cout << " | " << strings.back() << std::endl;
+			//std::cout << strings.size();
+			//if (strings.size() < 10)
+			//	std::cout << " ";
+			//std::cout << " | " << strings.back() << std::endl;
 		}
 		file.close();
 	}
@@ -440,20 +440,35 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 				tokens.push_back(SToken(ProcedureCall, line + 1, strings[line]));
 				int depthLevel = 0;
 				const char *startOfParam = c + 1;
+				bool isInStringLiteral = false;
 				while (*c != '\0')
 				{
-					if (*c == '(')
+					if (isInStringLiteral)
 					{
-						++depthLevel;
-					}
-					else if (*c == ')')
-					{
-						if (--depthLevel <= 0)
+						if (*c == '"')
 						{
-							std::string buffer(startOfParam, c - startOfParam);
-							//std::cout << "arglist of " << scope << "." << name << "() is [" << buffer << "]" << std::endl;
-							tokens.back().statement = new Procedure(scope, name, parseFunctionParameters(buffer.c_str()));
-							break;
+							isInStringLiteral = false;
+						}
+					}
+					else
+					{
+						if (*c == '"')
+						{
+							isInStringLiteral = true;
+						}
+						else if (*c == '(')
+						{
+							++depthLevel;
+						}
+						else if (*c == ')')
+						{
+							if (--depthLevel <= 0)
+							{
+								std::string buffer(startOfParam, c - startOfParam);
+								//std::cout << "arglist of " << scope << "." << name << "() is [" << buffer << "]" << std::endl;
+								tokens.back().statement = new Procedure(scope, name, parseFunctionParameters(buffer.c_str()));
+								break;
+							}
 						}
 					}
 					++c;
@@ -529,10 +544,10 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 Statement* parseTokens(const std::vector<SToken>& tokens, std::size_t start, std::size_t end)
 {
 	//std::cout << "parseTokens() on:";
-	for (std::size_t i = start; i < end; ++i)
+	/*for (std::size_t i = start; i < end; ++i)
 	{
 		std::cout << tokenToChar(tokens[i].type) << " ";
-	}
+	}*/
 	//std::cout << std::endl;
 	if (tokens.empty())
 	{

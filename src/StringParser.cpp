@@ -46,14 +46,14 @@ std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp
 				{
 					buffer += '\\';
 				}
-				else if (*c == '\n')
+				else if (*c == 'n')
 				{
 					buffer += '\n';
 				}
 				else
 				{
 					//	error: invalid escape char
-					std::string error = "invalid escpe char: '";
+					std::string error = "invalid escape char: '";
 					error += *c;
 					error += '\'';
 					throw SyntaxErrorException(error);
