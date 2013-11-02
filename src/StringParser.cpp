@@ -23,7 +23,7 @@ std::unique_ptr<const StringConcatenation> parseStringExpression(const char *exp
 	const char *c = exp;
 	const char *start;
 	const char *startOfStringFunction = nullptr;
-	std::cout << "we got [" << c << "]" << std::endl;
+	//std::cout << "we got [" << c << "]" << std::endl;
 
 	std::string buffer;	//	used to hold string literals
 

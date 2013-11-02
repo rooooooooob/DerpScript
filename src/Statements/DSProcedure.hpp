@@ -17,7 +17,7 @@ class DSProcedure
 public:
 	DSProcedure(Context& context,
 		const std::vector<std::string>& parameterNames,
-		const std::vector<std::string>& parameterTypes,
+		const std::vector<ParameterList::Type>& parameterTypes,
 		std::unique_ptr<const Statement> body
 	);
 

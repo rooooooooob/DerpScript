@@ -77,8 +77,6 @@ static Statement *parseTokens(const std::vector<SToken>& tokens, std::size_t sta
 
 static char tokenToChar(TokenType type);
 
-static void eatWhitespace(const char*& c);
-
 ////////////////////////////////////////////////////
 //		  PUBLIC FUNCTION DEFINITIONS		   //	<--------EXTERN-DEFINITIONS-HERE---------<<<
 ////////////////////////////////////////////////////
@@ -134,9 +132,6 @@ Statement* parseStrings(const std::vector<std::string>& strings, std::size_t fir
 
 	Statement *retVal = nullptr;
 
-	for (int i = first; i < last; ++i)
-		std::cout << "ps:" << strings[i] << "\n";
-
 	try
 	{
 		createTokens(tokens, strings, first, last);
@@ -174,7 +169,7 @@ void executeFile(const char *filename, Context& context)
 	Statement *logic = nullptr;
 
 	logic = parseFile(filename);
-	std::cout<<"doneparsing" << logic << "\n"; std::cout.flush();
+
 	logic->execute(context);
 
 	if (logic)
@@ -221,10 +216,8 @@ SNode::SNode(SToken type, SNode*& head)
 
 Statement* SNode::createStatement()
 {
-	std::cout << "   createStatement()[" << tokenToChar(type) << "]:   ";
 	if (!statement)
 	{
-		std::cout << "\tcreating statement on heap\n";
 		if (type == If)
 		{
 			//  I don't think it's physically possible to cram more 'right's into the next couple lines...
@@ -294,7 +287,7 @@ void SNode::killLeft()
 		left->left->right = this;
 	}
 	left = left->left;
-	std::cout << "killed left\n";
+	//std::cout << "killed left\n";
 	if (temp->statement)
 	{
 		delete temp->statement;
@@ -310,7 +303,7 @@ void SNode::killRight()
 {
 	if (!right)
 	{
-		std::cout << "couldn't kill right (\n";
+		//std::cout << "couldn't kill right (\n";
 		return;
 	}
 	SNode *temp = right;
@@ -319,7 +312,7 @@ void SNode::killRight()
 		right->right->left = this;
 	}
 	right = right->right;
-	std::cout << "killed right\n";
+	//std::cout << "killed right\n";
 	if (temp->statement)
 	{
 		delete temp->statement;
@@ -344,14 +337,14 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 {
 	tokens.clear(); //  memory leaks lol
 	bool parsedElse;
-	std::cout << "Parsing statements: ";
+	//std::cout << "Parsing statements: ";
 	for (std::size_t line = first; line < last; ++line)
 	{
 		const char *c = strings[line].c_str();
 		parsedElse = false;
 
-		std::cout << "[" << strings[line] << "]";
-		std::cout.flush();
+		//std::cout << "[" << strings[line] << "]";
+		//std::cout.flush();
 
 		eatWhitespace(c);
 		if (*c == '{')
@@ -458,7 +451,7 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 						if (--depthLevel <= 0)
 						{
 							std::string buffer(startOfParam, c - startOfParam);
-							std::cout << "arglist of " << scope << "." << name << "() is [" << buffer << "]" << std::endl;
+							//std::cout << "arglist of " << scope << "." << name << "() is [" << buffer << "]" << std::endl;
 							tokens.back().statement = new Procedure(scope, name, parseFunctionParameters(buffer.c_str()));
 							break;
 						}
