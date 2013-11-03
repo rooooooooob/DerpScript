@@ -82,6 +82,8 @@ public:
 	bool variableExists(const std::string& scope, const std::string& name) const;
 	/**
 	 * Pushes a new map for local variables on. This is to be called at the start of funtions.
+	 * This takes everything you've pushed with pushStackString/pushStackNumber onto the top
+	 * of the stack.
 	 */
 	void pushStack();
 	/**
@@ -245,6 +247,18 @@ public:
 	 * @param value The return value
 	 */
 	void setReturnValue(float value);
+	/**
+	 * Pushes a string onto the stack (call this BEFORE you push the stack)
+	 * @param name The name of the local variable
+	 * @param value The value of the string
+	 */
+	void pushStackString(const std::string& name, const std::string& value);
+	/**
+	 * Pushes a number onto the stack (call this BEFORE you push the stack)
+	 * @param name The name of the local variable
+	 * @param value The value of the number
+	 */
+	void pushStackNumber(const std::string& name, float value);
 
 #ifdef DS_DEBUG
 	/**
@@ -269,11 +283,15 @@ private:
 	//!	The local variables currently on the stack. Only the ones on the top are accessable.
 	std::stack<FlagDB*> localVars;
 	//!	The local strings currently on the stack. Only the ones on the top are accessable.
-	std::stack<std::map<std::string, std::string> > localStrings;
+	std::stack<StringDB*> localStrings;
 	//!	The bound strings currently registered
 	std::map<std::string, std::map<std::string, BoundString*> > strings;
 	//!	The return value kept on the stack for returning functions
 	float returnValue;
+	//!	
+	FlagDB *stackNumberBuffer;
+	//!	
+	StringDB *stackStringBuffer;
 };
 
 /*

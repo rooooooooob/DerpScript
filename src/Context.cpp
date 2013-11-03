@@ -10,6 +10,8 @@ namespace ds
 
 Context::Context()
 	:returnValue(1337)
+	,stackNumberBuffer(nullptr)
+	,stackStringBuffer(nullptr)
 {
 	localVars.push(new FlagDB());
 }
@@ -100,8 +102,24 @@ bool Context::variableExists(const std::string& scope, const std::string& name) 
 
 void Context::pushStack()
 {
-	localVars.push(new FlagDB());
-	localStrings.push(std::map<std::string, std::string>());
+	if (stackNumberBuffer)
+	{
+		localVars.push(stackNumberBuffer);
+		stackNumberBuffer = nullptr;
+	}
+	else
+	{
+		localVars.push(new FlagDB());
+	}
+	if (stackStringBuffer)
+	{
+		localStrings.push(stackStringBuffer);
+		stackStringBuffer = nullptr;
+	}
+	else
+	{
+		localStrings.push(new StringDB());
+	}
 }
 
 void Context::popStack()
@@ -113,6 +131,7 @@ void Context::popStack()
 	}
 	if (!localStrings.empty())
 	{
+		delete localStrings.top();
 		localStrings.pop();
 	}
 }
@@ -232,6 +251,19 @@ void Context::eraseEverything()
 		delete localVars.top();
 		localVars.pop();
 	}
+	while (!localStrings.empty())
+	{
+		delete localStrings.top();
+		localStrings.pop();
+	}
+	if (stackNumberBuffer)
+	{
+		delete stackNumberBuffer;
+	}
+	if (stackStringBuffer)
+	{
+		delete stackStringBuffer;
+	}
 }
 
 void Context::unregisterScope(const std::string& scope)
@@ -308,7 +340,7 @@ const std::string Context::getStringFlag(const std::string& scope, const std::st
 	{
 		if (scope == "local")
 		{
-			value = localStrings.top().at(name);
+			value = localStrings.top()->get(name);
 		}
 		else
 		{
@@ -327,7 +359,7 @@ void Context::setStringFlag(const std::string& scope, const std::string& name, c
 {
 	if (scope == "local")
 	{
-		localStrings.top()[name] = value;
+		localStrings.top()->set(name, value);
 	}
 	else
 	{
@@ -347,6 +379,24 @@ float Context::getReturnValue() const
 void Context::setReturnValue(float value)
 {
 	returnValue = value;
+}
+
+void Context::pushStackString(const std::string& name, const std::string& value)
+{
+	if (stackStringBuffer == nullptr)
+	{
+		stackStringBuffer = new StringDB();
+	}
+	stackStringBuffer->set(name, value);
+}
+
+void Context::pushStackNumber(const std::string& name, float value)
+{
+	if (stackNumberBuffer == nullptr)
+	{
+		stackNumberBuffer = new FlagDB();
+	}
+	stackNumberBuffer->set(name, value);
 }
 
 #ifdef DS_DEBUG

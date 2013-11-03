@@ -37,7 +37,6 @@ DSFunction& DSFunction::operator=(DSFunction& other)
 
 float DSFunction::operator()(const ParameterList& parameters) const
 {
-	context->pushStack();
 	for (int i = 0; i < parameters.size(); ++i)
 	{
 		ParameterList::Type type = parameters.getTypeOfParameter(i);
@@ -50,13 +49,15 @@ float DSFunction::operator()(const ParameterList& parameters) const
 		switch (type)
 		{
 			case ParameterList::Type::Number:
-				context->setFlag("local", parameterNames[i], parameters.getNumericalParameter(*context, i));
+				context->pushStackNumber(parameterNames[i], parameters.getNumericalParameter(*context, i));
 				break;
 			case ParameterList::Type::String:
-				context->setStringFlag("local", parameterNames[i], parameters.getStringParameter(*context, i));
+				context->pushStackString(parameterNames[i], parameters.getStringParameter(*context, i));
 				break;
 		}
 	}
+
+	context->pushStack();
 	
 	body->execute(*context);
 	
