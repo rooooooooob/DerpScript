@@ -12,9 +12,13 @@ public:
 	Interpreter();
 	~Interpreter();
 
-	void interpret(const char *fname);
+	void run(const char *fname);
 
+	void use();
+	
 private:
+	void loadSTDLibs();
+
 	Context context;
 };
 

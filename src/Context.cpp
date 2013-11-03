@@ -13,7 +13,7 @@ Context::Context()
 	,stackNumberBuffer(nullptr)
 	,stackStringBuffer(nullptr)
 {
-	localVars.push(new FlagDB());
+	this->pushStack();
 }
 
 Context::~Context()

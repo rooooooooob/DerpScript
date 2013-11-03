@@ -1,21 +1,20 @@
 #include <iostream>
-#include "ParserTester.hpp"
 #include "SyntaxErrorException.hpp"
 #include "RuntimeInterpreterErrorException.hpp"
 #include "Interpreter.hpp"
 
 int main(int argc, char **argv)
 {
+	ds::Interpreter interpreter;
 	if (argc == 1)
 	{
-		ds::useParser();
+		interpreter.use();
 	}
 	else
 	{
-		ds::Interpreter interpreter;
 		try
 		{
-			interpreter.interpret(argv[1]);
+			interpreter.run(argv[1]);
 		}
 		catch (ds::SyntaxErrorException& see)
 		{

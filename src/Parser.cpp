@@ -359,6 +359,13 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 		//std::cout << "[" << strings[line] << "]";
 
 		eatWhitespace(c);
+
+		//	ignore blank lines or comments
+		if (*c == '\n' || *c == '\r' || *c == '\0' || *c == '@' || strncmp(c, "//", 2) == 0)
+		{
+			continue;
+		}
+
 		if (*c == '{')
 		{
 			tokens.push_back(SToken(OpenBrace, line + 1, strings[line]));
@@ -565,7 +572,7 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 				}
 			}
 		}
-		else if (!parsedElse && strncmp(c, "//", 2) != 0 && *c != '@')	//  Uh oh, not a comment either...
+		else if (!parsedElse)
 		{
 			std::stringstream ss;
 			ss << "Encountered unknown statement \""

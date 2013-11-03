@@ -58,9 +58,9 @@ void DSProcedure::operator()(const ParameterList& parameters) const
 	}
 
 	context->pushStack();
-	
+
 	body->execute(*context);
-	
+
 	context->popStack();
 }
 
