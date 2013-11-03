@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include <functional>
 
 #include "Parser.hpp"
 #include "ExpressionParser.hpp"
@@ -153,27 +154,13 @@ void Interpreter::use()
 
 void Interpreter::loadSTDLibs()
 {
-	using namespace std::placeholders;
-	Context& context(context);
-	context.registerProcedure("local", "print", "S", [&context](const ParameterList& params)
-	{
-		print(context, params);
-	});
-	context.registerProcedure("local", "print", "N", [&context](const ParameterList& params)
-	{
-		printNum(context, params);
-	});
-	context.registerStringFunction("local", "str", "N", [&context](const ParameterList& params)
-	{
-		return str(context, params);
-	});
 	//	StringLib
-	//context.registerStringFunction("local", "str", "N", std::bind(str, context, _1));
-	//context.registerFunction("local", "strlen", "S", std::bind(strlen, context, _1));
-	//context.registerFunction("local", "num", "S", std::bind(num, context, _1));
+	registerLibraryStringFunction("local", "str", "N", str);
+	registerLibraryFunction("local", "strlen", "S", strlen);
+	registerLibraryFunction("local", "num", "S", num);
 	//	IOLib
-	//context.registerProcedure("local", "print", "S", std::bind(print, context, _1));
-	//context.registerProcedure("local", "print", "N", std::bind(printNum, context, _1));
+	registerLibraryProcedure("local", "print", "S", print);
+	registerLibraryProcedure("local", "print", "N", printNum);
 }
 
 }
