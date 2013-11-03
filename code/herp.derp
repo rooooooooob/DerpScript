@@ -1,0 +1,32 @@
+scope test
+{
+
+	proc rep(String a, Number b)
+	{
+		i = 0
+		while (i < b)
+		{
+			print([a])
+			i += 1
+		}
+	}
+
+}
+
+proc rep(String a, Number b)
+{
+	print("rep("[a]","[str(b)]")\n")
+}
+
+@main entry point for any program
+proc main()
+{
+	set msg "Hello, World!"
+	test:rep([msg]"\n", 3)
+	print("--------------------\n")
+	rep([msg], 3)
+}
+
+
+
+

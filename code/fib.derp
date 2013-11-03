@@ -1,0 +1,36 @@
+@calculates the nth fibonacci number
+func fib(Number n) -> Number
+{
+	if (n < 2) @ base case
+		return n
+	else @ recursion case
+		return fib(n -1) + fib(n - 2)
+}
+
+@calculates n factorial iteratively
+func factorial(Number n) -> Number
+{
+	ret = 1
+	while (n > 1)
+	{
+		ret *= n
+		n -= 1
+	}
+	return ret
+}
+
+@calculates n factorial recursively
+func factorialRecursive(Number n) -> Number
+{
+	if (n > 1)
+		return n * factorialRecursive(n - 1)
+	else
+		return n
+}
+
+
+
+
+
+
+
