@@ -15,7 +15,7 @@ int main(int argc, char **argv)
 		ds::Interpreter interpreter;
 		try
 		{
-			interpreter.interpret();
+			interpreter.interpret(argv[1]);
 		}
 		catch (ds::SyntaxErrorException& see)
 		{

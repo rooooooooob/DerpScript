@@ -12,16 +12,17 @@ void StringDB::set(const std::string& name, const std::string& value)
 	strings[name] = value;
 }
 
-const std::string& StringDB::get(const std::string& name) const
+std::string StringDB::get(const std::string& name) const
 {
 	std::string value;
-	try
-	{
-		value = strings.at(name);
-	}
-	catch (const std::exception& e)
+	auto it = strings.find(name);
+	if (it == strings.end())
 	{
 		value = "";
+	}
+	else
+	{
+		value = it->second;
 	}
 	return value;
 }

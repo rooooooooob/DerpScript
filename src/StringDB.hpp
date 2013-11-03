@@ -15,7 +15,7 @@ public:
 
 	void set(const std::string& name, const std::string& value);
 
-	const std::string& get(const std::string& name) const;
+	std::string get(const std::string& name) const;
 
 	//void save(Save& save) const;
 

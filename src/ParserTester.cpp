@@ -11,6 +11,7 @@
 #include "Expressions/Constant.hpp"
 #include "SyntaxErrorException.hpp"
 #include "RuntimeInterpreterErrorException.hpp"
+#include "ParserUtils.hpp"
 
 /*
 	TODO:	 fix a ++ b crashing
@@ -100,7 +101,7 @@ void useParser()
 	{
 		try
 		{
-			std::cout << ">";
+			std::cout << "\n>";
 			std::getline(std::cin, input);
 			if (input.compare(0, 4, "eval") == 0)
 			{
@@ -136,7 +137,9 @@ void useParser()
 			}
 			else if (input.compare(0, 4, "load") == 0)
 			{
-				loadFile(context, input.c_str() + 4);
+				const char *fname = input.c_str() + 4;
+				eatWhitespace(fname);
+				loadFile(context, fname);
 				std::cout << "Loaded " << input.c_str() + 4 << std::endl;
 			}
 			else if (input.compare(0, 4, "exit") == 0)

@@ -357,7 +357,6 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 		parsedElse = false;
 
 		//std::cout << "[" << strings[line] << "]";
-		//std::cout.flush();
 
 		eatWhitespace(c);
 		if (*c == '{')
@@ -566,7 +565,7 @@ void createTokens(std::vector<SToken>& tokens, const std::vector<std::string>& s
 				}
 			}
 		}
-		else if (!parsedElse && strncmp(c, "//", 2) != 0)	//  Uh oh, not a comment either...
+		else if (!parsedElse && strncmp(c, "//", 2) != 0 && *c != '@')	//  Uh oh, not a comment either...
 		{
 			std::stringstream ss;
 			ss << "Encountered unknown statement \""

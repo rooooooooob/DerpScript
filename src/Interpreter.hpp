@@ -12,7 +12,7 @@ public:
 	Interpreter();
 	~Interpreter();
 
-	void interpret();
+	void interpret(const char *fname);
 
 private:
 	Context context;

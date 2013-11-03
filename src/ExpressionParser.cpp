@@ -281,7 +281,7 @@ void createTokens(std::vector<EToken>& tokens, const char *exp)
 {
 	tokens.clear(); //  memory leaks lol
 	bool singleChar; //  whether or not a single-char token was parsed on a given iteration
-	for (const char *c = exp; *c != '\0';)
+	for (const char *c = exp; *c != '\0' && *c != '@' && !(*c == '/' && *(c + 1) == '/'); )
 	{
 		singleChar = true;
 		if (*c == '+')							  //  Arithmetic operators

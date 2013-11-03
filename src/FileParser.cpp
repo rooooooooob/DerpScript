@@ -37,15 +37,15 @@ void loadFile(Context& context, const char *filename)
 
 	if (file.is_open())
 	{
-		std::cout << "Opened '" << filename << "'\n";
+		//std::cout << "Opened '" << filename << "'\n";
 		while (file.good())
 		{
 			strings.push_back(std::string());
 			getline(file, strings.back());
-			std::cout << strings.size();
-			if (strings.size() < 10)
-				std::cout << " ";
-			std::cout << " | " << strings.back() << std::endl;
+			//std::cout << strings.size();
+			//if (strings.size() < 10)
+			//	std::cout << " ";
+			//std::cout << " | " << strings.back() << std::endl;
 		}
 		file.close();
 	}
@@ -74,7 +74,10 @@ void loadFile(Context& context, const char *filename)
 		{
 			const char *c = strings[line].c_str();
 
-			if (*c == '\n' || *c == '\r' || *c == '\0')
+			eatWhitespace(c);
+
+			//	ignore blank lines or comments
+			if (*c == '\n' || *c == '\r' || *c == '\0' || *c == '@' || strncmp(c, "//", 2) == 0)
 			{
 				continue;
 			}
@@ -230,7 +233,7 @@ void parseProc(std::string& name,
 				s += sizeof("String") - 1;
 				parameterTypes.push_back(ParameterList::Type::String);
 			}
-			else
+			else if (*s != ')')	//	make sure it's not just empty
 			{
 				throw SyntaxErrorException("Unknown parameter type found");
 			}
