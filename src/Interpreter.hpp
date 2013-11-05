@@ -36,7 +36,7 @@ template <typename F>
 void Interpreter::registerLibraryFunction(const std::string& scope, const std::string& name, const std::string& paramTypes, F function)
 {
 	Context& context(context);
-	context.registerProcedure(scope, name, paramTypes, [&context, function](const ParameterList& params) -> float
+	context.registerFunction(scope, name, paramTypes, [&context, function](const ParameterList& params) -> float
 	{
 		return function(context, params);
 	});

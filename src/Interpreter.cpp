@@ -16,6 +16,7 @@
 #include "ParameterList.hpp"
 #include "Lib/StringLib.hpp"
 #include "Lib/IOLib.hpp"
+#include "Lib/MathLib.hpp"
 
 /*
 	TODO:	 fix a ++ b crashing
@@ -161,6 +162,19 @@ void Interpreter::loadSTDLibs()
 	//	IOLib
 	registerLibraryProcedure("local", "print", "S", print);
 	registerLibraryProcedure("local", "print", "N", printNum);
+	registerLibraryProcedure("local", "println", "S", println);
+	registerLibraryProcedure("local", "println", "N", printlnNum);
+	registerLibraryStringFunction("local", "read", "", read);
+	registerLibraryStringFunction("local", "readln", "", readln);
+	//	MathLib
+	registerLibraryFunction("local", "sqrt", "N", dssqrt);
+	registerLibraryFunction("local", "ceil", "N", dsceil);
+	registerLibraryFunction("local", "floor", "N", dsfloor);
+	registerLibraryFunction("local", "round", "N", dsround);
+	registerLibraryFunction("local", "pow", "NN", dspow);
+	registerLibraryFunction("local", "sin", "N", dssin);
+	registerLibraryFunction("local", "cos", "N", dscos);
+
 }
 
 }
