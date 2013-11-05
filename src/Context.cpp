@@ -264,6 +264,12 @@ void Context::eraseEverything()
 	{
 		delete stackStringBuffer;
 	}
+	for (auto& file : openFiles)
+	{
+		file.second->close();
+		delete file.second;
+	}
+	openFiles.clear();
 }
 
 void Context::unregisterScope(const std::string& scope)
@@ -397,6 +403,44 @@ void Context::pushStackNumber(const std::string& name, float value)
 		stackNumberBuffer = new FlagDB();
 	}
 	stackNumberBuffer->set(name, value);
+}
+
+bool Context::openFile(const std::string& filename)
+{
+	auto it = openFiles.find(filename);
+	if (it == openFiles.end())
+	{
+		openFiles[filename] = new std::fstream(filename.c_str(), std::fstream::in | std::fstream::out);
+		openFiles[filename]->open(filename.c_str());
+	}
+	else
+	{
+		it->second->close();
+		it->second->open(filename.c_str());
+	}
+	bool nigger = openFiles[filename]->is_open();
+	return nigger;
+}
+
+std::fstream& Context::getFile(const std::string& filename)
+{
+	if (openFiles.count(filename) == 0)
+	{
+		openFiles[filename] = new std::fstream(filename.c_str(), std::fstream::in | std::fstream::out);
+		openFiles[filename]->open(filename.c_str());
+	}
+	return *openFiles[filename];
+}
+
+void Context::closeFile(const std::string& filename)
+{
+	auto it = openFiles.find(filename);
+	if (it != openFiles.end())
+	{
+		it->second->close();
+		delete it->second;
+	}
+	openFiles.erase(it);
 }
 
 #ifdef DS_DEBUG

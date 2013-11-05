@@ -16,6 +16,7 @@
 #include <iostream>
 #include <stack>
 #include <vector>
+#include <fstream>
 #include <functional>
 #include "BoundVar.hpp"
 #include "BoundString.hpp"
@@ -259,6 +260,24 @@ public:
 	 * @param value The value of the number
 	 */
 	void pushStackNumber(const std::string& name, float value);
+	/**
+	 * Opens a file for access in the language
+	 * @param filename Filename of file
+	 * @return Whether or not the file sucessfully opened
+	 */
+	bool openFile(const std::string& filename);
+	/**
+	 * Closes a file that was open
+	 * @param filename The filename of the file
+	 */
+	void closeFile(const std::string& filename);
+	/**
+	 * Gets the filestream for a given filename
+	 * Opens file if not already open (For now at least, might change later)
+	 * @param filename Filename of file to get
+	 * @return The file
+	 */
+	std::fstream& getFile(const std::string& filename);
 
 #ifdef DS_DEBUG
 	/**
@@ -292,6 +311,8 @@ private:
 	FlagDB *stackNumberBuffer;
 	//!	
 	StringDB *stackStringBuffer;
+	//! A list of all open files
+	std::map<std::string, std::fstream*> openFiles;
 };
 
 /*

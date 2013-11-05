@@ -166,6 +166,11 @@ void Interpreter::loadSTDLibs()
 	registerLibraryProcedure("local", "println", "N", printlnNum);
 	registerLibraryStringFunction("local", "read", "", read);
 	registerLibraryStringFunction("local", "readln", "", readln);
+	registerLibraryStringFunction("local", "read", "S", fileread);
+	registerLibraryStringFunction("local", "readln", "S", filereadln);
+	registerLibraryProcedure("local", "write", "SS", filewrite);
+	registerLibraryProcedure("local", "open", "S", open);
+	registerLibraryProcedure("local", "close", "S", close);
 	//	MathLib
 	registerLibraryFunction("local", "sqrt", "N", dssqrt);
 	registerLibraryFunction("local", "ceil", "N", dsceil);
