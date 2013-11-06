@@ -63,6 +63,18 @@ private:
 	const Expression * const rhs;
 };
 
+class Modulo : public Expression
+{
+public:
+	Modulo(const Expression *lhs, const Expression *rhs);
+	~Modulo();
+
+	float evaluate(const Context& context) const;
+private:
+	const Expression * const lhs;
+	const Expression * const rhs;
+};
+
 
 
 

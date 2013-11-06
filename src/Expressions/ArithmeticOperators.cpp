@@ -88,6 +88,26 @@ float Division::evaluate(const Context& context) const
 
 
 
+/*		Modulo		*/
+Modulo::Modulo(const Expression *lhs, const Expression *rhs)
+	:lhs(lhs)
+	,rhs(rhs)
+{
+}
+
+Modulo::~Modulo()
+{
+	delete lhs;
+	delete rhs;
+}
+
+float Modulo::evaluate(const Context& context) const
+{
+	return (int) lhs->evaluate(context) % (int) rhs->evaluate(context);
+}
+
+
+
 
 
 /*		Unary minus		*/

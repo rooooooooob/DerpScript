@@ -35,7 +35,29 @@ namespace ds
 //		  DECLARATION OF STUFF USED ONLY IN THIS FILE		   //
 ///////////////////////////////////////////////////////////////////
 
-enum TokenType {Add, Sub, Mul, Div, Var, Num, RBr, LBr, Inv, UMi, Gre, Les, GrE, LeE, Eq, NEq, And, Or, Fun};
+enum TokenType
+{
+	Add,	//	addition
+	Sub,	//	subtration
+	Mul,	//	multiplication
+	Div,	//	division
+	Mod,	//	modulo
+	Var,	//	variable (float)
+	Num,	//	constant float literal
+	RBr,	//	right bracket
+	LBr,	//	left bracket
+	Inv,	//	logical not
+	UMi,	//	unary minus
+	Gre,	//	greater than
+	Les,	//	less than
+	GrE,	//	greater than or equal
+	LeE,	//	less than or equal
+	Eq,		//	equality
+	NEq,	//	not equal
+	And,	//	logical and
+	Or,		//	logical or
+	Fun		//	number-returning function call
+};
 
 struct EToken
 {
@@ -176,6 +198,9 @@ Expression* ENode::createExpression()
 			case Div:
 				exp = new Division(left->createExpression(), right->createExpression());
 				break;
+			case Mod:
+				exp = new Modulo(left->createExpression(), right->createExpression());
+				break;
 			case Gre:
 				exp = new GreaterThan(left->createExpression(), right->createExpression());
 				break;
@@ -306,6 +331,10 @@ void createTokens(std::vector<EToken>& tokens, const char *exp)
 		else if (*c == '/')
 		{
 			tokens.push_back(Div);
+		}
+		else if (*c == '%')
+		{
+			tokens.push_back(Mod);
 		}
 		else if (*c == '=')					 //  Realational operators
 		{
@@ -556,7 +585,7 @@ Expression *parseTokens(const std::vector<EToken>& tokens, std::size_t start, st
 		}
 
 
-		parseLevel({Mul, Div}, head);
+		parseLevel({Mul, Div, Mod}, head);
 		parseLevel({Add, Sub}, head);
 		parseLevel({Gre, Les, GrE, LeE}, head);
 		parseLevel({Eq, NEq}, head);
@@ -625,6 +654,8 @@ char tokenToChar(TokenType type)
 			return '*';
 		case Div:
 			return '/';
+		case Mod:
+			return '%';
 		case Var:
 			return 'V';
 		case Num:
