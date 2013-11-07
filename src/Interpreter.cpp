@@ -17,6 +17,7 @@
 #include "Lib/StringLib.hpp"
 #include "Lib/IOLib.hpp"
 #include "Lib/MathLib.hpp"
+#include "Lib/DynamicLib.hpp"
 
 /*
 	TODO:	 fix a ++ b crashing
@@ -133,6 +134,13 @@ void Interpreter::use()
 				loadFile(context, fname);
 				std::cout << "Loaded " << fname << std::endl;
 			}
+			else if (input.compare(0, 6, "unload") == 0)
+			{
+				if (input.compare(6, 3, "all") == 0)
+				{
+					std::cout << "Unloaded everything" << std::endl;
+				}
+			}
 			else if (input.compare(0, 4, "exit") == 0)
 			{
 				break;
@@ -179,6 +187,10 @@ void Interpreter::loadSTDLibs()
 	registerLibraryFunction("local", "pow", "NN", dspow);
 	registerLibraryFunction("local", "sin", "N", dssin);
 	registerLibraryFunction("local", "cos", "N", dscos);
+	//	DynamicLib
+	registerLibraryFunction("local", "eval", "S", eval);
+	registerLibraryProcedure("local", "exec", "S", exec);
+	registerLibraryProcedure("local", "load", "S", load);
 
 }
 

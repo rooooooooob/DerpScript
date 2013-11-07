@@ -1,0 +1,9 @@
+proc main()
+{
+	println("What's your name?")
+	set name [readln()]
+	println("Hi, "[name]"!")
+	open("testout3.txt")
+	write("testout3.txt", "your name is"[name])
+	close("testout3.txt")
+}
