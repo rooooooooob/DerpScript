@@ -128,7 +128,7 @@ public:
 	void registerFunction
 	(
 		const std::string& scope, const std::string& name, const std::string& params,
-		const std::function<float(const ParameterList&)>& function
+		const std::function<float(Context&, const ParameterList&)>& function
 	);
 
 	/**
@@ -144,7 +144,7 @@ public:
 		const std::string& scope,
 		const std::string& name,
 		const std::string& params,
-		const std::function<std::string(const ParameterList&)>& function
+		const std::function<std::string(Context&, const ParameterList&)>& function
 	);
 
 	/**
@@ -156,7 +156,7 @@ public:
 	 */
 	void registerProcedure(
 		const std::string& scope, const std::string& name,
-		const std::string& params, const std::function<void(const ParameterList&)>& function
+		const std::string& params, const std::function<void(Context&, const ParameterList&)>& function
 	);
 
 	/**
@@ -169,7 +169,7 @@ public:
 		const std::string& scope,
 		const std::string& name,
 		const ParameterList& parameters
-	) const;
+	);
 
 	/**
 	 * Evaluates a registered string-returning function of this Context
@@ -177,7 +177,7 @@ public:
 	 * @param name The name of the procedure
 	 * @param parameters The parameters to call this function with
 	 */
-	std::string evaluateStringFunction(const std::string& scope, const std::string& name, const ParameterList& parameters) const;
+	std::string evaluateStringFunction(const std::string& scope, const std::string& name, const ParameterList& parameters);
 
 	/**
 	 * Evaluates a procedure of this Context
@@ -294,11 +294,11 @@ private:
 	//! A lookup table of all String Databases bound to this Context
 	std::unordered_map<std::string, StringDB*> stringDBs;
 	//!	A map of all string-returning functions bound to this Context
-	std::map<std::string, std::map<std::string, std::map<std::string, std::function<std::string(const ParameterList&)> > > > stringFunctions;
+	std::map<std::string, std::map<std::string, std::map<std::string, std::function<std::string(Context&, const ParameterList&)> > > > stringFunctions;
 	//!	A map of all numerical-returning functions bound to this Context
-	std::map<std::string, std::map<std::string, std::map<std::string, std::function<float(const ParameterList&)> > > > numericalFunctions;
+	std::map<std::string, std::map<std::string, std::map<std::string, std::function<float(Context&, const ParameterList&)> > > > numericalFunctions;
 	//!	A map of all non-returning procedures bound to this Context
-	std::unordered_map<std::string, std::map<std::string, std::map<std::string, std::function<void(const ParameterList&)> > > > procedures;
+	std::unordered_map<std::string, std::map<std::string, std::map<std::string, std::function<void(Context&, const ParameterList&)> > > > procedures;
 	//!	The local variables currently on the stack. Only the ones on the top are accessable.
 	std::stack<FlagDB*> localVars;
 	//!	The local strings currently on the stack. Only the ones on the top are accessable.
@@ -373,6 +373,7 @@ static void generateRegisterMethod(const std::string& scope, const std::string& 
  * Generates a function to evaluate functions, used by Context's methods to avoid redundancy.
  * T	=	return type of function
  * MT	=	map's type (use decltype() for your sanity's sake)
+ * @param context Reference to this pointer
  * @param scope The scope of the function to eval
  * @param name The name of the function to eval
  * @param parameters The parameters to feed into the function
@@ -380,7 +381,7 @@ static void generateRegisterMethod(const std::string& scope, const std::string& 
  * @param typename String saying the return type, used for errors
  */
 template <typename T, typename MT>
-static T generateEvaluateMethod(const std::string& scope, const std::string& name, const ParameterList& parameters, const MT& functions, const std::string& typeName)
+static T generateEvaluateMethod(Context& context, const std::string& scope, const std::string& name, const ParameterList& parameters, const MT& functions, const std::string& typeName)
 {
 	auto scopeIterator = functions.find(scope);
 	if (scopeIterator != functions.end())
@@ -391,7 +392,7 @@ static T generateEvaluateMethod(const std::string& scope, const std::string& nam
 			auto paramIterator = nameIterator->second.find(parameters.getSignature());
 			if (paramIterator != nameIterator->second.end())
 			{
-				return paramIterator->second(parameters);
+				return paramIterator->second(context, parameters);
 			}
 			else
 			{

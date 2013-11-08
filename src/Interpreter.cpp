@@ -48,8 +48,8 @@ void Interpreter::use()
 	std::cout << "Welcome to the parsing tester!" << std::endl;
 	std::string input;
 	Context& context(context);
-	context.registerFunction("tester", "fib", "N", std::function<float(const ParameterList&)>(
-		[&context](const ParameterList& params) -> float
+	context.registerFunction("tester", "fib", "N", std::function<float(Context& context, const ParameterList&)>(
+		[](Context& context, const ParameterList& params) -> float
 		{
 			int n = (int) params.getNumericalParameter(context, 0);
 			ParameterList p1, p2;
@@ -61,8 +61,8 @@ void Interpreter::use()
 				return 1.f;
 		}
 	));
-	context.registerFunction("tester", "multiPrint", "SN", std::function<float(const ParameterList&)>(
-		[&context](const ParameterList& params) -> float
+	context.registerFunction("tester", "multiPrint", "SN", std::function<float(Context& context, const ParameterList&)>(
+		[](Context& context, const ParameterList& params) -> float
 		{
 			std::string input = params.getStringParameter(context, 0);
 			int n = (int) params.getNumericalParameter(context, 1);
@@ -71,8 +71,8 @@ void Interpreter::use()
 			return 0.f;
 		}
 	));
-	context.registerStringFunction("tester", "repeat", "SN", std::function<std::string(const ParameterList&)>(
-		[&context](const ParameterList& params) -> std::string
+	context.registerStringFunction("tester", "repeat", "SN", std::function<std::string(Context& context, const ParameterList&)>(
+		[](Context& context, const ParameterList& params) -> std::string
 		{
 			std::string input = params.getStringParameter(context, 0);
 			int n = (int) params.getNumericalParameter(context, 1);

@@ -15,8 +15,7 @@ class Context;
 class DSProcedure
 {
 public:
-	DSProcedure(Context& context,
-		const std::vector<std::string>& parameterNames,
+	DSProcedure(const std::vector<std::string>& parameterNames,
 		const std::vector<ParameterList::Type>& parameterTypes,
 		std::unique_ptr<const Statement> body
 	);
@@ -25,11 +24,9 @@ public:
 
 	DSProcedure& operator=(DSProcedure& other);
 
-	void operator()(const ParameterList& parameters) const;
+	void operator()(Context& context, const ParameterList& parameters) const;
 
 private:
-
-	Context *context;
 	std::vector<std::string> parameterNames;
 	std::vector<ParameterList::Type> parameterTypes;
 	std::unique_ptr<const Statement> body;

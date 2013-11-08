@@ -14,12 +14,14 @@ Function::Function(const std::string& scope, const std::string& name, std::uniqu
 
 float Function::evaluate(const Context& context) const
 {
-	return context.evaluateNumericalFunction(scope, name, *parameters);
+	Context& hackfornowchangelater(const_cast<Context&>(context));
+	return hackfornowchangelater.evaluateNumericalFunction(scope, name, *parameters);
 }
 
 std::string Function::evaluateAsString(const Context& context) const
 {
-	return context.evaluateStringFunction(scope, name, *parameters);
+	Context& hackfornowchangelater(const_cast<Context&>(context));
+	return hackfornowchangelater.evaluateStringFunction(scope, name, *parameters);
 }
 
 }

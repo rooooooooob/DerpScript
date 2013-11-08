@@ -35,8 +35,7 @@ private:
 template <typename F>
 void Interpreter::registerLibraryFunction(const std::string& scope, const std::string& name, const std::string& paramTypes, F function)
 {
-	Context& context(context);
-	context.registerFunction(scope, name, paramTypes, [&context, function](const ParameterList& params) -> float
+	context.registerFunction(scope, name, paramTypes, [function](Context& context, const ParameterList& params) -> float
 	{
 		return function(context, params);
 	});
@@ -45,8 +44,7 @@ void Interpreter::registerLibraryFunction(const std::string& scope, const std::s
 template <typename F>
 void Interpreter::registerLibraryStringFunction(const std::string& scope, const std::string& name, const std::string& paramTypes, F function)
 {
-	Context& context(context);
-	context.registerStringFunction(scope, name, paramTypes, [&context, function](const ParameterList& params) -> std::string
+	context.registerStringFunction(scope, name, paramTypes, [function](Context& context, const ParameterList& params) -> std::string
 	{
 		return function(context, params);
 	});
@@ -55,8 +53,7 @@ void Interpreter::registerLibraryStringFunction(const std::string& scope, const 
 template <typename F>
 void Interpreter::registerLibraryProcedure(const std::string& scope, const std::string& name, const std::string& paramTypes, F function)
 {
-	Context& context(context);
-	context.registerProcedure(scope, name, paramTypes, [&context, function](const ParameterList& params)
+	context.registerProcedure(scope, name, paramTypes, [function](Context& context, const ParameterList& params)
 	{
 		function(context, params);
 	});

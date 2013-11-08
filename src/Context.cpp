@@ -194,35 +194,35 @@ void Context::registerFlagDB(const std::string& scope, FlagDB *database)
 	flags[scope] = database;
 }
 
-void Context::registerFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<float(const ParameterList&)>& function)
+void Context::registerFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<float(Context&, const ParameterList&)>& function)
 {
 	generateRegisterMethod(scope, name, params, function, numericalFunctions, "number");
 }
 
-void Context::registerStringFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<std::string(const ParameterList&)>& function)
+void Context::registerStringFunction(const std::string& scope, const std::string& name, const std::string& params, const std::function<std::string(Context&, const ParameterList&)>& function)
 {
 	generateRegisterMethod(scope, name, params, function, stringFunctions, "string");
 }
 
-void Context::registerProcedure(const std::string& scope, const std::string& name, const std::string& params, const std::function<void(const ParameterList&)>& function)
+void Context::registerProcedure(const std::string& scope, const std::string& name, const std::string& params, const std::function<void(Context&, const ParameterList&)>& function)
 {
 	generateRegisterMethod(scope, name, params, function, procedures, "void");
 }
 
-float Context::evaluateNumericalFunction(const std::string& scope, const std::string& name, const ParameterList& parameters) const
+float Context::evaluateNumericalFunction(const std::string& scope, const std::string& name, const ParameterList& parameters)
 {
 	//std::cout << "evaling " << scope << ":" << name << parameters.getFormattedSignature() << std::endl;
-	return generateEvaluateMethod<float, decltype(numericalFunctions)>(scope, name, parameters, numericalFunctions, "number");
+	return generateEvaluateMethod<float, decltype(numericalFunctions)>(*this, scope, name, parameters, numericalFunctions, "number");
 }
 
-std::string Context::evaluateStringFunction(const std::string& scope, const std::string& name, const ParameterList& parameters) const
+std::string Context::evaluateStringFunction(const std::string& scope, const std::string& name, const ParameterList& parameters)
 {
-	return generateEvaluateMethod<std::string, decltype(stringFunctions)>(scope, name, parameters, stringFunctions, "string");
+	return generateEvaluateMethod<std::string, decltype(stringFunctions)>(*this, scope, name, parameters, stringFunctions, "string");
 }
 
 void Context::executeProcedure(const std::string& scope, const std::string& name, const ParameterList& parameters)
 {
-	generateEvaluateMethod<void, decltype(procedures)>(scope, name, parameters, procedures, "void");
+	generateEvaluateMethod<void, decltype(procedures)>(*this, scope, name, parameters, procedures, "void");
 }
 
 void Context::eraseEverything()

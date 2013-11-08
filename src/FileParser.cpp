@@ -123,12 +123,12 @@ void loadFile(Context& context, const char *filename)
 					}
 					if (functionType == FunctionType::Procedure)
 					{
-						DSProcedure dsproc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
+						DSProcedure dsproc(parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
 						context.registerProcedure(scope, name, params, dsproc);
 					}
 					else
 					{
-						DSFunction dsfunc(context, parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
+						DSFunction dsfunc(parameterNames, parameterTypes, std::unique_ptr<const Statement>(parseStrings(strings, startOfFunction + 1, line)));
 						context.registerFunction(scope, name, params, dsfunc);
 					}
 				}
